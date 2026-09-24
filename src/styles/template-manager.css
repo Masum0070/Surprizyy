@@ -311,6 +311,12 @@
   color: #e8dfcf;
 }
 
+.admin-template-actions .admin-template-edit-button {
+  position: relative;
+  z-index: 2;
+  pointer-events: auto;
+}
+
 /* =========================================================
    TEMPLATE VERSIONS
 ========================================================= */

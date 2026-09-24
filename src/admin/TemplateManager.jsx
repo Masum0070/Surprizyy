@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "../core/supabase/client";
 import {getAdminSessionHeaders,} from "./AdminSession";
 import "../styles/template-manager.css";
@@ -24,6 +24,7 @@ const [statusFilter, setStatusFilter] = useState("all");
 const [giftFilter, setGiftFilter] = useState("all");
 const [previewFile, setPreviewFile] = useState(null);
 const [formDirty, setFormDirty] = useState(false);
+const templateFormRef = useRef(null);
 
 useEffect(() => {
   const timer = setTimeout(() => {
@@ -476,6 +477,31 @@ async function handleUpdate(event) {
             : "Failed to deactivate template."
       );
     }
+
+  }
+
+  function openTemplateEditor(template) {
+    setEditingId(template.id);
+    setForm({
+      gift_type_id: template.gift_type_id || "",
+      name: template.name || "",
+      slug: template.slug || "",
+      description: template.description || "",
+      base_price: template.base_price ?? "",
+      discount_percentage: template.discount_percentage ?? "0",
+    });
+    setPreviewFile(null);
+    setFormDirty(false);
+    setError("");
+    setMessage("");
+    setShowCreateForm(true);
+
+    window.setTimeout(() => {
+      templateFormRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }, 0);
   }
 
   async function handleDelete(template) {
@@ -662,6 +688,7 @@ async function handleUpdate(event) {
       {showCreateForm && (
         <form
           className="admin-template-form"
+          ref={templateFormRef}
           onSubmit={editingId ? handleUpdate : handleCreate}
         >
         <div className="admin-template-form-heading">
@@ -951,34 +978,17 @@ async function handleUpdate(event) {
                 <div className="admin-template-actions">
                   <>
                     <button
-                        type="button"
-                        onClick={() => {
-                          setEditingId(template.id);
-                          setShowCreateForm(true);
-
-                          setForm({
-                            gift_type_id:
-                              template.gift_type_id || "",
-                            name:
-                              template.name || "",
-                            slug:
-                              template.slug || "",
-                            description:
-                              template.description || "",
-                            preview_url:
-                              template.preview_url || "",
-                            base_price:
-                              template.base_price ?? "",
-                            discount_percentage:
-                              template.discount_percentage ?? "0",
-                          });
-
-                          setError("");
-                          setMessage("");
-                        }}
-                      >
-                        Edit
-                      </button>
+                      type="button"
+                      className="admin-template-edit-button"
+                      aria-label={`Edit ${template.name}`}
+                      onClick={(event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        openTemplateEditor(template);
+                      }}
+                    >
+                      Edit
+                    </button>
 
                     <button
                       type="button"
