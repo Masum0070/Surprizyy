@@ -300,6 +300,72 @@ Deno.serve(
         );
       }
 
+      const { data: formSections, error: formSectionsError } =
+        await supabase
+          .from("form_sections")
+          .select("id")
+          .eq("template_version_id", templateVersionId)
+          .eq("is_active", true);
+
+      if (formSectionsError) {
+        console.error(formSectionsError);
+
+        return jsonResponse(
+          {
+            success: false,
+            error: "Failed to verify the selected form",
+          },
+          500
+        );
+      }
+
+      const sectionIds = (formSections || []).map((section) => section.id);
+
+      if (sectionIds.length > 0) {
+        const { data: requiredFields, error: requiredFieldsError } =
+          await supabase
+            .from("form_fields")
+            .select("field_key, label, field_type, required")
+            .in("section_id", sectionIds)
+            .eq("is_active", true)
+            .eq("required", true);
+
+        if (requiredFieldsError) {
+          console.error(requiredFieldsError);
+
+          return jsonResponse(
+            {
+              success: false,
+              error: "Failed to verify required form fields",
+            },
+            500
+          );
+        }
+
+        for (const field of requiredFields || []) {
+          if (["file", "image", "images"].includes(field.field_type)) {
+            continue;
+          }
+
+          const value = values[field.field_key];
+          const missing =
+            value === null ||
+            value === undefined ||
+            value === "" ||
+            (typeof value === "string" && !value.trim());
+
+          if (missing) {
+            return jsonResponse(
+              {
+                success: false,
+                error: `${field.label || field.field_key} is required`,
+              },
+              400
+            );
+          }
+        }
+      }
+
       /*
        * -----------------------------------------------------
        * EXTRACT COMMON CUSTOMER DATA

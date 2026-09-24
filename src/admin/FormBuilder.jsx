@@ -43,6 +43,7 @@ function FormBuilder() {
     placeholder: "",
     helperText: "",
     options: "",
+    maxFiles: 0,
     required: false,
   });
 
@@ -53,6 +54,7 @@ function FormBuilder() {
     placeholder: "",
     helperText: "",
     options: "",
+    maxFiles: 0,
     required: false,
   });
 
@@ -615,6 +617,14 @@ function FormBuilder() {
                         {field.required && (
                           <span> — Required</span>
                         )}
+                        {["file", "image", "images"].includes(
+                          field.field_type
+                        ) && (
+                          <span>
+                            {" "}— Max {Number(field.max_files) || 1} photo
+                            {(Number(field.max_files) || 1) === 1 ? "" : "s"}
+                          </span>
+                        )}
                         <div className="field-order-buttons">
                           <button
                             type="button"
@@ -677,6 +687,7 @@ function FormBuilder() {
                               options: Array.isArray(field.options)
                                 ? field.options.join(", ")
                                 : field.options || "",
+                              maxFiles: Number(field.max_files) || 1,
                               required: !!field.required,
                             });
 
@@ -808,6 +819,10 @@ function FormBuilder() {
                           e.target.value === "select"
                             ? current.options
                             : "",
+                        maxFiles:
+                          ["file", "image", "images"].includes(e.target.value)
+                            ? current.maxFiles || 1
+                            : 0,
                       }))
                     }
                   >
@@ -820,6 +835,10 @@ function FormBuilder() {
                     <option value="select">Select</option>
                     <option value="checkbox">Checkbox</option>
                     <option value="file">File / Image</option>
+                    <option value="image">Single Photo</option>
+                    <option value="images">Multiple Photos</option>
+                    <option value="image">Single Photo</option>
+                    <option value="images">Multiple Photos</option>
                   </select>
                 </div>
 
@@ -852,6 +871,28 @@ function FormBuilder() {
                     }
                   />
                 </div>
+
+                {[
+                  "file",
+                  "image",
+                  "images",
+                ].includes(fieldForm.fieldType) && (
+                  <div>
+                    <label>Max upload count</label>
+                    <input
+                      type="number"
+                      min="1"
+                      step="1"
+                      value={fieldForm.maxFiles || 1}
+                      onChange={(e) =>
+                        setFieldForm((current) => ({
+                          ...current,
+                          maxFiles: Math.max(1, Number(e.target.value) || 1),
+                        }))
+                      }
+                    />
+                  </div>
+                )}
 
                 {fieldForm.fieldType === "select" && (
                   <div>
@@ -1047,6 +1088,12 @@ function FormBuilder() {
                             fieldForm.helperText.trim(),
                           required: fieldForm.required,
                           options,
+                          max_files:
+                            ["file", "image", "images"].includes(
+                              fieldForm.fieldType
+                            )
+                              ? Number(fieldForm.maxFiles) || 1
+                              : null,
                           sort_order:
                             fields.filter(
                               (field) =>
@@ -1140,8 +1187,12 @@ function FormBuilder() {
                       setEditFieldForm((current) => ({
                         ...current,
                         fieldType: e.target.value,
-                      }))
-                    }
+                          maxFiles:
+                            ["file", "image", "images"].includes(e.target.value)
+                              ? current.maxFiles || 1
+                              : 0,
+                        }))
+                      }
                   >
                     <option value="text">Text</option>
                     <option value="textarea">Long Text</option>
@@ -1152,6 +1203,8 @@ function FormBuilder() {
                     <option value="select">Select</option>
                     <option value="checkbox">Checkbox</option>
                     <option value="file">File / Image</option>
+                    <option value="image">Single Photo</option>
+                    <option value="images">Multiple Photos</option>
                   </select>
                 </div>
 
@@ -1182,6 +1235,28 @@ function FormBuilder() {
                     }
                   />
                 </div>
+
+                {[
+                  "file",
+                  "image",
+                  "images",
+                ].includes(editFieldForm.fieldType) && (
+                  <div>
+                    <label>Max upload count</label>
+                    <input
+                      type="number"
+                      min="1"
+                      step="1"
+                      value={editFieldForm.maxFiles || 1}
+                      onChange={(e) =>
+                        setEditFieldForm((current) => ({
+                          ...current,
+                          maxFiles: Math.max(1, Number(e.target.value) || 1),
+                        }))
+                      }
+                    />
+                  </div>
+                )}
 
                 {editFieldForm.fieldType === "select" && (
                   <div>
@@ -1262,6 +1337,13 @@ function FormBuilder() {
                             editFieldForm.helperText.trim(),
                           required: editFieldForm.required,
                           options,
+                          max_files: [
+                            "file",
+                            "image",
+                            "images",
+                          ].includes(editFieldForm.fieldType)
+                            ? Number(editFieldForm.maxFiles) || 1
+                            : null,
                         });
 
                         setShowEditFieldForm(false);

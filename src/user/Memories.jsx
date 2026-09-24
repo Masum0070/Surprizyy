@@ -1,8 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { supabase } from "../core/supabase/client";
+import { compressImage } from "../core/imageCompression";
+import {
+  clearPendingMedia,
+  getPendingMedia,
+} from "../core/pendingMedia";
 
 export default function Memories({ navigate, template }) {
   const [photos, setPhotos] = useState([]);
+  const [compressingPhotos, setCompressingPhotos] = useState(false);
+  const [sections, setSections] = useState([]);
+  const [fieldValues, setFieldValues] = useState({});
+  const [formError, setFormError] = useState("");
 
   let checkoutData = {};
 
@@ -19,28 +28,199 @@ export default function Memories({ navigate, template }) {
     checkoutData.paymentId &&
     checkoutData.templateVersionId;
 
-  function handlePhotoUpload(event) {
-  if (!paymentVerified) {
-    alert("Payment verification is required before uploading memories.");
-    event.target.value = "";
-    return;
+  let draftData = {};
+  try {
+    draftData = JSON.parse(
+      sessionStorage.getItem("surprizyy_draft") || "{}"
+    );
+  } catch {
+    draftData = {};
   }
 
-  const files = Array.from(event.target.files || []);
+  useEffect(() => {
+    let active = true;
 
-    const newPhotos = files.map((file) => ({
+    async function loadFields() {
+      const { data, error } = await supabase.functions.invoke("public-form", {
+        body: {
+          template_version_id: checkoutData.templateVersionId,
+        },
+      });
+
+      if (!active) return;
+
+      if (error || !data?.success) {
+        const { data: directSections, error: directError } = await supabase
+          .from("form_sections")
+          .select("id, title, description, sort_order, is_active")
+          .eq("template_version_id", checkoutData.templateVersionId)
+          .eq("is_active", true)
+          .order("sort_order", { ascending: true });
+
+        if (directError) {
+          setFormError(
+            error?.message ||
+              data?.error ||
+              directError.message ||
+              "Failed to load your form."
+          );
+          return;
+        }
+
+        const sectionIds = (directSections || []).map((section) => section.id);
+        const { data: directFields, error: fieldsError } = sectionIds.length
+          ? await supabase
+              .from("form_fields")
+              .select("*")
+              .in("section_id", sectionIds)
+              .eq("is_active", true)
+              .order("sort_order", { ascending: true })
+          : { data: [], error: null };
+
+        if (fieldsError) {
+          setFormError(fieldsError.message);
+          return;
+        }
+
+        setSections(
+          (directSections || []).map((section) => ({
+            ...section,
+            fields: (directFields || []).filter(
+              (field) => field.section_id === section.id
+            ),
+          }))
+        );
+        setFieldValues(draftData.formValues || {});
+        return;
+      }
+
+      const loadedSections = Array.isArray(data.sections) ? data.sections : [];
+      setSections(loadedSections);
+      setFieldValues(draftData.formValues || {});
+    }
+
+    if (paymentVerified) {
+      loadFields();
+    }
+
+    return () => {
+      active = false;
+    };
+  }, [checkoutData.templateVersionId, paymentVerified]);
+
+  const maxPhotos = (() => {
+    const rawLimit = Number(
+      draftData.photoLimit ||
+      sessionStorage.getItem("surprizyy_memory_limit") ||
+      "9"
+    );
+
+    return Number.isFinite(rawLimit) && rawLimit > 0 ? rawLimit : 9;
+  })();
+
+  const prePaymentFieldKeys = new Set([
+    "recipient_name",
+    "customer_email",
+    "customer_phone",
+    "recipientName",
+    "customerEmail",
+    "customerPhone",
+    "mobile_number",
+    "phone",
+  ]);
+
+  React.useEffect(() => {
+    let active = true;
+
+    async function loadPendingPhotos() {
+      try {
+        const pendingMedia = await getPendingMedia();
+
+        if (!active || pendingMedia.length === 0) {
+          return;
+        }
+
+        const restoredPhotos = pendingMedia.map((item) => ({
+          id: item.id,
+          fieldKey: item.fieldKey,
+          name: item.file.name,
+          file: item.file,
+          url: URL.createObjectURL(item.file),
+        }));
+
+        setPhotos(restoredPhotos.slice(0, maxPhotos));
+      } catch (error) {
+        console.error("Failed to restore selected photos:", error);
+      }
+    }
+
+    loadPendingPhotos();
+
+    return () => {
+      active = false;
+    };
+  }, [maxPhotos]);
+
+  async function handlePhotoUpload(event, fieldKey = "memory_photos", limit = maxPhotos) {
+    if (!paymentVerified) {
+      alert("Payment verification is required before uploading memories.");
+      event.target.value = "";
+      return;
+    }
+
+    const files = Array.from(event.target.files || []);
+    const fieldPhotos = photos.filter((photo) => photo.fieldKey === fieldKey);
+    const remainingSlots = Math.max(limit - fieldPhotos.length, 0);
+
+    if (remainingSlots <= 0) {
+      alert(`You can upload up to ${limit} photos for this field.`);
+      event.target.value = "";
+      return;
+    }
+
+    const selectedFiles = files.slice(0, remainingSlots);
+
+    setCompressingPhotos(true);
+
+    let compressedFiles;
+    try {
+      compressedFiles = await Promise.all(
+        selectedFiles.map((file) => compressImage(file))
+      );
+    } catch (error) {
+      alert(
+        error instanceof Error
+          ? error.message
+          : "One of the photos could not be converted."
+      );
+      event.target.value = "";
+      setCompressingPhotos(false);
+      return;
+    }
+
+    const newPhotos = compressedFiles.map((file) => ({
       id: `${file.name}-${file.lastModified}-${Math.random()}`,
+      fieldKey,
       name: file.name,
       file,
       url: URL.createObjectURL(file),
     }));
 
     setPhotos((current) => {
-      const combined = [...current, ...newPhotos];
-      return combined.slice(0, 9);
+      const otherPhotos = current.filter((photo) => photo.fieldKey !== fieldKey);
+      const currentFieldPhotos = current.filter(
+        (photo) => photo.fieldKey === fieldKey
+      );
+      return [
+        ...otherPhotos,
+        ...currentFieldPhotos,
+        ...newPhotos,
+      ].filter((photo) => photo.fieldKey !== fieldKey)
+        .concat([...currentFieldPhotos, ...newPhotos].slice(0, limit));
     });
 
     event.target.value = "";
+    setCompressingPhotos(false);
   }
 
   function removePhoto(id) {
@@ -56,7 +236,22 @@ export default function Memories({ navigate, template }) {
   }
 
   async function handleContinue() {
-    if (!paymentVerified || photos.length === 0) return;
+    if (!paymentVerified) return;
+
+    setFormError("");
+
+    for (const section of sections) {
+      for (const field of section.fields || []) {
+        if (
+          field.required &&
+          !["file", "image", "images"].includes(field.field_type) &&
+          !String(fieldValues[field.field_key] || "").trim()
+        ) {
+          setFormError(`${field.label || "This field"} is required.`);
+          return;
+        }
+      }
+    }
 
     let created = null;
     try {
@@ -81,10 +276,17 @@ export default function Memories({ navigate, template }) {
             templateVersionId: checkoutData.templateVersionId,
             paymentId: checkoutData.paymentId,
             values: {
+              ...fieldValues,
               recipient_name: draft.recipientName,
               customer_email: draft.customerEmail,
               customer_phone: draft.customerPhone,
-              special_message: draft.message,
+              special_message:
+                fieldValues.special_message ||
+                Object.values(fieldValues).find(
+                  (value) => typeof value === "string" && value.trim()
+                ) ||
+                "",
+              ...fieldValues,
             },
           },
         }
@@ -105,8 +307,15 @@ export default function Memories({ navigate, template }) {
     const formData = new FormData();
     formData.append("surpriseId", created.surpriseId);
     formData.append("managementToken", created.managementToken);
+    formData.append(
+      "fieldKey",
+      draftData.photoFields?.[0]?.fieldKey || "memory_photos"
+    );
     photos.forEach((photo) => {
-      if (photo.file) formData.append("files", photo.file, photo.name);
+      if (photo.file) {
+        formData.append("files", photo.file, photo.name);
+        formData.append("fieldKeys", photo.fieldKey || "memory_photos");
+      }
     });
 
     if (photos.some((photo) => photo.file)) {
@@ -119,6 +328,8 @@ export default function Memories({ navigate, template }) {
         return;
       }
     }
+
+    await clearPendingMedia();
 
     sessionStorage.setItem(
   "surprizyy_memory_count",
@@ -182,57 +393,127 @@ sessionStorage.setItem(
       </button>
 
       <section className="memories-header">
-        <span>📸 Your Memories</span>
+        <span>✨ Complete your surprise</span>
 
-        <h1>Add the moments that matter.</h1>
+        <h1>Tell us everything we need.</h1>
 
         <p>
-          Upload multiple photos and turn your favorite
-          memories into part of the surprise.
+          Complete the sections created by the admin, including messages and
+          your photo album.
         </p>
       </section>
 
       <section className="memories-card">
-        <div className="memory-upload-area">
-          <div className="memory-upload-icon">
-            📷
-          </div>
+        {sections.map((section) => {
+          const postPaymentFields = (section.fields || []).filter(
+            (field) => !prePaymentFieldKeys.has(field.field_key)
+          );
 
-          <h2>Upload your memories</h2>
+          if (postPaymentFields.length === 0) {
+            return null;
+          }
 
-          <p>
-            Select multiple photos at once.
-            <br />
-            Maximum 9 photos.
-          </p>
+          return (
+          <section key={section.id} className="dynamic-form-section">
+            {section.title && <h2>{section.title}</h2>}
+            {section.description && <p>{section.description}</p>}
 
-          <label className="memory-upload-button">
-            + Choose Photos
+            {postPaymentFields
+              .map((field) => {
+                const isPhotoField = ["file", "image", "images"].includes(
+                  field.field_type
+                );
+                const fieldLimit = Math.max(1, Number(field.max_files) || 1);
+                const value = fieldValues[field.field_key] || "";
+                const update = (nextValue) =>
+                  setFieldValues((current) => ({
+                    ...current,
+                    [field.field_key]: nextValue,
+                  }));
 
-            <input
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-              multiple
-              hidden
-              onChange={handlePhotoUpload}
-            />
-          </label>
-        </div>
+                if (isPhotoField) {
+                  const fieldPhotos = photos.filter(
+                    (photo) => photo.fieldKey === field.field_key
+                  );
 
-        <div className="memory-progress">
-          <div>
-            <span>Memories</span>
-            <strong>{photos.length}/9</strong>
-          </div>
+                  return (
+                    <div className="form-field" key={field.id}>
+                      <label>
+                        {field.label}
+                        {field.required && " *"}
+                      </label>
+                      <input
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        multiple={field.field_type === "images" || fieldLimit > 1}
+                        onChange={(event) =>
+                          handlePhotoUpload(
+                            event,
+                            field.field_key,
+                            fieldLimit
+                          )
+                        }
+                        disabled={compressingPhotos || fieldPhotos.length >= fieldLimit}
+                      />
+                      <small>
+                        {fieldPhotos.length}/{fieldLimit} photos selected.
+                        Photos are converted to JPEG under 100 KB.
+                      </small>
+                    </div>
+                  );
+                }
 
-          <div className="memory-progress-bar">
-            <span
-              style={{
-                width: `${(photos.length / 9) * 100}%`,
-              }}
-            />
-          </div>
-        </div>
+                return (
+                  <div className="form-field" key={field.id}>
+                    <label htmlFor={`post-payment-${field.field_key}`}>
+                      {field.label}
+                      {field.required && " *"}
+                    </label>
+                    {field.field_type === "textarea" ? (
+                      <textarea
+                        id={`post-payment-${field.field_key}`}
+                        rows="5"
+                        value={value}
+                        placeholder={field.placeholder || ""}
+                        onChange={(event) => update(event.target.value)}
+                      />
+                    ) : field.field_type === "select" ? (
+                      <select
+                        id={`post-payment-${field.field_key}`}
+                        value={value}
+                        onChange={(event) => update(event.target.value)}
+                      >
+                        <option value="">Select...</option>
+                        {(Array.isArray(field.options)
+                          ? field.options
+                          : []
+                        ).map((option) => (
+                          <option key={String(option)} value={option}>
+                            {option}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <input
+                        id={`post-payment-${field.field_key}`}
+                        type={field.field_type || "text"}
+                        value={value}
+                        placeholder={field.placeholder || ""}
+                        onChange={(event) => update(event.target.value)}
+                      />
+                    )}
+                  </div>
+                );
+              })}
+          </section>
+          );
+        })}
+
+        {formError && <div className="admin-error">{formError}</div>}
+
+        {sections.length === 0 && !formError && (
+          <p>Loading your post-payment form...</p>
+        )}
 
         {photos.length > 0 && (
           <section className="memory-gallery">
@@ -242,19 +523,7 @@ sessionStorage.setItem(
                 <h2>Little moments</h2>
               </div>
 
-              {photos.length < 9 && (
-                <label className="memory-add-more">
-                  + Add more
-
-                  <input
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp"
-                    multiple
-                    hidden
-                    onChange={handlePhotoUpload}
-                  />
-                </label>
-              )}
+              <span>{photos.length} photo{photos.length === 1 ? "" : "s"} selected</span>
             </div>
 
             <div className="memory-photo-grid">

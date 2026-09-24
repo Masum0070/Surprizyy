@@ -146,6 +146,7 @@ if (action === "list") {
         name,
         slug,
         description,
+        preview_url,
         base_price,
         discount_percentage,
         is_active,

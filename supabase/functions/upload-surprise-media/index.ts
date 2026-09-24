@@ -88,6 +88,12 @@ Deno.serve(async (req) => {
     const managementToken = cleanString(
       formData.get("managementToken")
     );
+    const fieldKey =
+      cleanString(formData.get("fieldKey")) ||
+      "memory_photos";
+    const fieldKeys = formData
+      .getAll("fieldKeys")
+      .map((value) => cleanString(value) || fieldKey);
 
     if (!surpriseId || !managementToken) {
       return jsonResponse(
@@ -109,7 +115,7 @@ Deno.serve(async (req) => {
       error: surpriseError,
     } = await supabase
       .from("surprises")
-      .select("id, status")
+      .select("id, status, template_version_id")
       .eq("id", surpriseId)
       .eq("management_token_hash", tokenHash)
       .maybeSingle();
@@ -146,6 +152,47 @@ Deno.serve(async (req) => {
         },
         400
       );
+    }
+
+    const { data: formSections } = await supabase
+      .from("form_sections")
+      .select("id")
+      .eq("template_version_id", surprise.template_version_id);
+
+    const { data: photoFields } = await supabase
+      .from("form_fields")
+      .select("field_key, max_files")
+      .in(
+        "section_id",
+        (formSections || []).map((section) => section.id)
+      )
+      .in("field_key", [...new Set(fieldKeys)])
+      .in("field_type", ["file", "image", "images"])
+      .eq("is_active", true);
+
+    for (const configuredField of photoFields || []) {
+      const uploadedForField = fieldKeys.filter(
+        (key) => key === configuredField.field_key
+      ).length;
+      const { count: existingCount } = await supabase
+        .from("media_files")
+        .select("id", { count: "exact", head: true })
+        .eq("surprise_id", surpriseId)
+        .eq("field_key", configuredField.field_key);
+
+      const configuredLimit = Number(configuredField.max_files) || null;
+      if (
+        configuredLimit &&
+        (existingCount || 0) + uploadedForField > configuredLimit
+      ) {
+        return jsonResponse(
+          {
+            success: false,
+            error: `This field allows a maximum of ${configuredLimit} photo${configuredLimit === 1 ? "" : "s"}.`,
+          },
+          400
+        );
+      }
     }
 
     const uploadedFiles = [];
@@ -201,10 +248,7 @@ Deno.serve(async (req) => {
         .from("media_files")
         .insert({
           surprise_id: surpriseId,
-          field_key:
-            index === 0
-              ? "main_photo"
-              : "memory_photos",
+          field_key: fieldKeys[index] || fieldKey,
           bucket_name: "surprise-media",
           storage_path: storagePath,
           original_filename: file.name,

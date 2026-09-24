@@ -17,11 +17,11 @@ export default function SurprisePreview({ navigate, template }) {
     surpriseData.recipientName || "Someone special";
 
   const message =
-  surpriseData.message ||
-  "A little surprise made especially for someone special.";
+    surpriseData.message ||
+    "A little surprise made especially for someone special.";
 
-const templateVersionId =
-  surpriseData.templateVersionId || null;
+  const templateVersionId =
+    surpriseData.templateVersionId || null;
 
   return (
     <main className="surprise-preview-page">
@@ -92,14 +92,14 @@ const templateVersionId =
             type="button"
             className="preview-continue-button"
             onClick={() => {
-  if (!templateVersionId) {
-    return;
-  }
+              if (!templateVersionId) {
+                return;
+              }
 
-  navigate(
-    `/create/birthday/${template}/checkout`
-  );
-}}
+              navigate(
+                `/create/birthday/${template}/checkout`
+              );
+            }}
           >
             Continue →
           </button>

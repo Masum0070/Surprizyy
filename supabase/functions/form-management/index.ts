@@ -443,6 +443,17 @@ Deno.serve(async (req) => {
         ? body.options
         : null;
 
+    const maxFilesValue =
+      body?.max_files !== undefined
+        ? Number(body.max_files)
+        : null;
+
+    const maxFiles =
+      Number.isFinite(maxFilesValue) &&
+      maxFilesValue >= 0
+        ? maxFilesValue
+        : null;
+
     const { data, error } =
       await db
         .from("form_fields")
@@ -455,6 +466,7 @@ Deno.serve(async (req) => {
           helper_text: helperText,
           required,
           options,
+          max_files: maxFiles,
           sort_order: sortOrder,
           is_active: isActive,
         })
@@ -566,6 +578,14 @@ Deno.serve(async (req) => {
 
     if (body?.options !== undefined) {
       updates.options = body.options;
+    }
+
+    if (body?.max_files !== undefined) {
+      const parsedMaxFiles = Number(body.max_files);
+
+      if (Number.isFinite(parsedMaxFiles) && parsedMaxFiles >= 0) {
+        updates.max_files = parsedMaxFiles;
+      }
     }
 
     if (

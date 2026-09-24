@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "../core/supabase/client";
 import {getAdminSessionHeaders,} from "./AdminSession";
 import "../styles/template-manager.css";
+import { compressImage } from "../core/imageCompression";
 
 function TemplateManager() {
   const [templates, setTemplates] = useState([]);
@@ -21,6 +22,7 @@ const [search, setSearch] = useState("");
 const [debouncedSearch, setDebouncedSearch] = useState("");
 const [statusFilter, setStatusFilter] = useState("all");
 const [giftFilter, setGiftFilter] = useState("all");
+const [previewFile, setPreviewFile] = useState(null);
 
 useEffect(() => {
   const timer = setTimeout(() => {
@@ -52,6 +54,7 @@ async function callApi(action, extra = {}) {
         },
         headers,
       }
+
     );
 
   if (error) {
@@ -67,6 +70,38 @@ async function callApi(action, extra = {}) {
   }
 
   return data;
+}
+
+async function uploadPreview(templateId, previewFile) {
+  if (!previewFile) return;
+
+  const compressed = await compressImage(previewFile);
+  const formData = new FormData();
+  formData.append("template_id", templateId);
+  formData.append("file", compressed, compressed.name);
+  const headers = await getAdminSessionHeaders();
+  const { data, error } = await supabase.functions.invoke(
+    "template-preview-upload",
+    { body: formData, headers }
+  );
+
+  if (error || !data?.success) {
+    let detail = data?.error;
+
+    if (!detail && error?.context) {
+      try {
+        const response = error.context;
+        const body = await response.json();
+        detail = body?.error;
+      } catch {
+        detail = null;
+      }
+    }
+
+    throw new Error(
+      detail || error?.message || "Failed to upload preview."
+    );
+  }
 }
 
   async function loadVersions(templateId) {
@@ -270,7 +305,7 @@ useEffect(() => {
     setSaving(true);
 
     try {
-      await callApi("create", {
+      const created = await callApi("create", {
         gift_type_id: form.gift_type_id,
         name: form.name.trim(),
         slug: form.slug.trim(),
@@ -280,6 +315,7 @@ useEffect(() => {
           form.discount_percentage || 0
         ),
       });
+      await uploadPreview(created.template.id, previewFile);
 
       setForm({
         gift_type_id: "",
@@ -292,6 +328,7 @@ useEffect(() => {
 
       setMessage("Template created successfully.");
       setShowCreateForm(false);
+      setPreviewFile(null);
       await loadData();
     } catch (err) {
       setError(
@@ -348,9 +385,11 @@ async function handleUpdate(event) {
       ),
       is_active: true,
     });
+    await uploadPreview(editingId, previewFile);
 
     setEditingId(null);
     setShowCreateForm(false);
+    setPreviewFile(null);
 
     setForm({
       gift_type_id: "",
@@ -706,6 +745,23 @@ async function handleUpdate(event) {
               rows="3"
             />
           </div>
+
+          <div className="admin-form-field">
+            <label htmlFor="template-preview">
+              Preview image
+            </label>
+            <input
+              id="template-preview"
+              type="file"
+              accept="image/*"
+              onChange={(event) =>
+                setPreviewFile(event.target.files?.[0] || null)
+              }
+            />
+            <small>
+              Images are compressed before being saved to the public preview bucket.
+            </small>
+          </div>
         </div>
 
         <button
@@ -757,11 +813,18 @@ async function handleUpdate(event) {
                 key={template.id}
               >
                 <div className="admin-template-preview">
-                  {template.gift_types?.name === "Birthday"
-                    ? "🎂"
-                    : template.gift_types?.name === "Rakhi"
-                      ? "🌸"
-                      : "✨"}
+                  {template.preview_url ? (
+                    <img
+                      src={template.preview_url}
+                      alt={`${template.name} preview`}
+                    />
+                  ) : (
+                    template.gift_types?.name === "Birthday"
+                      ? "🎂"
+                      : template.gift_types?.name === "Rakhi"
+                        ? "🌸"
+                        : "✨"
+                  )}
                 </div>
 
                 <div>
@@ -829,6 +892,8 @@ async function handleUpdate(event) {
                               template.slug || "",
                             description:
                               template.description || "",
+                            preview_url:
+                              template.preview_url || "",
                             base_price:
                               template.base_price ?? "",
                             discount_percentage:

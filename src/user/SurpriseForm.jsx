@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-
+import { useEffect, useState } from "react";
 export default function SurpriseForm({
   navigate,
   template,
@@ -8,38 +7,31 @@ export default function SurpriseForm({
   const [recipientName, setRecipientName] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
-  const [message, setMessage] = useState("");
+  const [formError, setFormError] = useState("");
 
-  function handleContinue(event) {
+  async function handleContinue(event) {
     event.preventDefault();
+    setFormError("");
 
-    if (
-      !recipientName.trim() ||
-      !customerEmail.trim() ||
-      !message.trim()
-    ) {
+    if (!recipientName.trim() || !customerEmail.trim()) {
+      setFormError("Please add the recipient name and your email.");
       return;
     }
 
     const surpriseData = {
-  recipientName: recipientName.trim(),
-  customerEmail: customerEmail.trim(),
-  customerPhone: customerPhone.trim(),
-  message: message.trim(),
-  templateVersionId,
-  template,
-};
+      recipientName: recipientName.trim(),
+      customerEmail: customerEmail.trim(),
+      customerPhone: customerPhone.trim(),
+      templateVersionId,
+      template,
+    };
 
-sessionStorage.removeItem("surprizyy_checkout");
-sessionStorage.removeItem("surprizyy_surprise");
-sessionStorage.removeItem("surprizyy_public_url");
-sessionStorage.removeItem("surprizyy_memory_count");
-sessionStorage.removeItem("surprizyy_memory_previews");
-
-sessionStorage.setItem(
-      "surprizyy_draft",
-      JSON.stringify(surpriseData)
-    );
+    sessionStorage.removeItem("surprizyy_checkout");
+    sessionStorage.removeItem("surprizyy_surprise");
+    sessionStorage.removeItem("surprizyy_public_url");
+    sessionStorage.removeItem("surprizyy_memory_count");
+    sessionStorage.removeItem("surprizyy_memory_previews");
+    sessionStorage.setItem("surprizyy_draft", JSON.stringify(surpriseData));
 
     navigate(`/create/birthday/${template}/preview`);
   }
@@ -66,71 +58,41 @@ sessionStorage.setItem(
 
       <form className="surprise-form-card" onSubmit={handleContinue}>
         <div className="form-field">
-          <label htmlFor="recipientName">
-            Recipient name
-          </label>
-
+          <label htmlFor="recipientName">Recipient name</label>
           <input
             id="recipientName"
             type="text"
             value={recipientName}
-            onChange={(event) =>
-              setRecipientName(event.target.value)
-            }
+            onChange={(event) => setRecipientName(event.target.value)}
             placeholder="Enter their name"
             required
           />
         </div>
 
         <div className="form-field">
-          <label htmlFor="customerEmail">
-            Your email
-          </label>
-
+          <label htmlFor="customerEmail">Your email</label>
           <input
             id="customerEmail"
             type="email"
             value={customerEmail}
-            onChange={(event) =>
-              setCustomerEmail(event.target.value)
-            }
+            onChange={(event) => setCustomerEmail(event.target.value)}
             placeholder="you@example.com"
             required
           />
         </div>
 
         <div className="form-field">
-          <label htmlFor="customerPhone">
-            WhatsApp number
-          </label>
-
+          <label htmlFor="customerPhone">WhatsApp number</label>
           <input
             id="customerPhone"
             type="tel"
             value={customerPhone}
-            onChange={(event) =>
-              setCustomerPhone(event.target.value)
-            }
+            onChange={(event) => setCustomerPhone(event.target.value)}
             placeholder="Enter WhatsApp number"
           />
         </div>
 
-        <div className="form-field">
-          <label htmlFor="specialMessage">
-            Special message
-          </label>
-
-          <textarea
-            id="specialMessage"
-            rows="6"
-            value={message}
-            onChange={(event) =>
-              setMessage(event.target.value)
-            }
-            placeholder="Write something special..."
-            required
-          />
-        </div>
+        {formError && <div className="admin-error">{formError}</div>}
 
         <button type="submit" className="form-continue-button">
           Continue to Preview →
