@@ -1,0 +1,1241 @@
+/* =========================================================
+   SURPRIZYY ADMIN LOGIN
+   LAMP REVEAL EXPERIENCE
+========================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   PAGE
+========================================================= */
+
+.admin-login {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 50% 45%,
+      rgba(255, 211, 92, 0.025),
+      transparent 28%
+    ),
+    #070707;
+
+  color: #fff;
+}
+
+.admin-login-ambient {
+  position: absolute;
+  inset: 0;
+
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      ellipse at 50% 45%,
+      rgba(255, 211, 92, 0.035),
+      transparent 45%
+    );
+
+  opacity: 0;
+
+  transition:
+    opacity 1.2s ease,
+    background 1.2s ease;
+
+  z-index: 0;
+}
+
+.admin-login-stage {
+  position: relative;
+
+  width: 100%;
+  min-height: 100vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  isolation: isolate;
+}
+
+/* =========================================================
+   UNLOCKED ROOM
+========================================================= */
+
+.admin-login-stage.is-unlocked {
+  background:
+    radial-gradient(
+      ellipse at 42% 45%,
+      rgba(255, 211, 91, 0.09),
+      transparent 38%
+    ),
+    radial-gradient(
+      ellipse at 75% 60%,
+      rgba(255, 190, 60, 0.035),
+      transparent 42%
+    );
+}
+
+.admin-login-stage.is-unlocked
+~ .admin-login-ambient {
+  opacity: 1;
+}
+
+/* =========================================================
+   FIREFLIES
+========================================================= */
+
+.admin-fireflies {
+  position: absolute;
+  inset: 0;
+
+  pointer-events: none;
+
+  z-index: 2;
+}
+
+.admin-firefly {
+  position: absolute;
+
+  width: 3px;
+  height: 3px;
+
+  border-radius: 50%;
+
+  background: #ffe58a;
+
+  box-shadow:
+    0 0 5px rgba(255, 227, 117, 0.95),
+    0 0 15px rgba(255, 210, 70, 0.65);
+
+  opacity: 0;
+
+  animation:
+    adminFireflyFloat
+    var(--admin-firefly-duration, 4s)
+    ease-in-out
+    infinite;
+
+  animation-delay:
+    var(--admin-firefly-delay, 0s);
+
+  transition:
+    opacity 0.8s ease;
+}
+
+.admin-login-stage.is-unlocked
+.admin-firefly {
+  opacity: 0.8;
+}
+
+@keyframes adminFireflyFloat {
+  0% {
+    transform:
+      translate3d(0, 18px, 0)
+      scale(0.55);
+
+    opacity: 0;
+  }
+
+  20% {
+    opacity: 0.75;
+  }
+
+  50% {
+    transform:
+      translate3d(12px, -18px, 0)
+      scale(1);
+  }
+
+  75% {
+    opacity: 0.45;
+  }
+
+  100% {
+    transform:
+      translate3d(-8px, -48px, 0)
+      scale(0.65);
+
+    opacity: 0;
+  }
+}
+
+/* =========================================================
+   LAMP
+========================================================= */
+
+.admin-lamp {
+  position: absolute;
+
+  left: 24%;
+  top: 50%;
+
+  width: 220px;
+  height: 430px;
+
+  transform:
+    translate(-50%, -50%);
+
+  border: 0;
+  padding: 0;
+
+  background: transparent;
+
+  cursor: pointer;
+
+  z-index: 5;
+
+  appearance: none;
+
+  transition:
+    transform 0.4s ease;
+}
+
+.admin-lamp:hover {
+  transform:
+    translate(-50%, -50%)
+    scale(1.015);
+}
+
+.admin-lamp:focus-visible {
+  outline: 2px solid rgba(255, 218, 102, 0.8);
+  outline-offset: 10px;
+  border-radius: 20px;
+}
+
+/* =========================================================
+   LAMP SHADE
+========================================================= */
+
+.admin-lamp-shade {
+  position: absolute;
+
+  left: 50%;
+  top: 50px;
+
+  width: 155px;
+  height: 82px;
+
+  transform:
+    translateX(-50%);
+
+  border-radius:
+    80px 80px 24px 24px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #1b1b1b,
+      #080808
+    );
+
+  border-bottom:
+    4px solid #303030;
+
+  box-shadow:
+    0 15px 35px rgba(0, 0, 0, 0.75),
+    inset 0 -6px 10px rgba(255, 210, 75, 0.035);
+
+  z-index: 5;
+}
+
+.admin-lamp-shade::after {
+  content: "";
+
+  position: absolute;
+
+  left: 18px;
+  right: 18px;
+  bottom: -3px;
+
+  height: 5px;
+
+  border-radius: 50%;
+
+  background: #414141;
+}
+
+/* =========================================================
+   BULB
+========================================================= */
+
+.admin-lamp-bulb {
+  position: absolute;
+
+  left: 50%;
+  top: 111px;
+
+  width: 25px;
+  height: 35px;
+
+  transform:
+    translateX(-50%);
+
+  border-radius:
+    50% 50% 45% 45%;
+
+  background:
+    radial-gradient(
+      circle at 50% 42%,
+      #fffbd0 0%,
+      #fff0a0 35%,
+      #ffd95b 72%,
+      #d9a92e 100%
+    );
+
+  box-shadow:
+    0 0 8px rgba(255, 225, 105, 0.35),
+    0 0 20px rgba(255, 210, 66, 0.18),
+    0 0 40px rgba(255, 195, 50, 0.08);
+
+  z-index: 6;
+
+  transition:
+    box-shadow 0.25s ease,
+    filter 0.25s ease,
+    transform 0.25s ease;
+}
+
+/* subtle idle breathing */
+
+.admin-lamp-bulb {
+  animation:
+    adminBulbIdle
+    3.5s
+    ease-in-out
+    infinite;
+}
+
+@keyframes adminBulbIdle {
+  0%,
+  100% {
+    filter: brightness(0.92);
+  }
+
+  50% {
+    filter: brightness(1.05);
+  }
+}
+
+/* =========================================================
+   LAMP POLE
+========================================================= */
+
+.admin-lamp-pole {
+  position: absolute;
+
+  left: 50%;
+  top: 128px;
+
+  width: 8px;
+  height: 195px;
+
+  transform:
+    translateX(-50%);
+
+  border-radius: 8px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #111,
+      #444,
+      #171717
+    );
+
+  box-shadow:
+    2px 0 6px rgba(255, 255, 255, 0.04);
+
+  z-index: 3;
+}
+
+/* =========================================================
+   LAMP BASE
+========================================================= */
+
+.admin-lamp-base {
+  position: absolute;
+
+  left: 50%;
+  bottom: 52px;
+
+  width: 135px;
+  height: 20px;
+
+  transform:
+    translateX(-50%);
+
+  border-radius: 50%;
+
+  background:
+    linear-gradient(
+      180deg,
+      #3b3b3b,
+      #111
+    );
+
+  box-shadow:
+    0 10px 18px rgba(0, 0, 0, 0.8);
+
+  z-index: 4;
+}
+
+/* =========================================================
+   LIGHT BEAM
+========================================================= */
+
+.admin-lamp-beam {
+  position: absolute;
+
+  left: 50%;
+  top: 123px;
+
+  width: 370px;
+  height: 330px;
+
+  transform:
+    translateX(-50%)
+    scaleY(0.25);
+
+  transform-origin:
+    50% 0%;
+
+  opacity: 0;
+
+  background:
+    linear-gradient(
+      135deg,
+      transparent 29%,
+      rgba(255, 222, 116, 0.035) 40%,
+      rgba(255, 213, 76, 0.09) 50%,
+      rgba(255, 207, 61, 0.035) 61%,
+      transparent 72%
+    );
+
+  clip-path:
+    polygon(
+      39% 0,
+      61% 0,
+      100% 100%,
+      0 100%
+    );
+
+  filter: blur(4px);
+
+  pointer-events: none;
+
+  z-index: 1;
+
+  transition:
+    opacity 0.7s ease,
+    transform 0.9s cubic-bezier(
+      0.16,
+      1,
+      0.3,
+      1
+    );
+}
+
+/* =========================================================
+   CLICK / UNLOCK ANIMATION
+========================================================= */
+
+.admin-login-stage.is-unlocked
+.admin-lamp-bulb {
+  animation:
+    adminBulbFlicker
+    0.55s
+    ease-out
+    1;
+
+  filter: brightness(1.45);
+
+  box-shadow:
+    0 0 15px rgba(255, 238, 145, 0.9),
+    0 0 40px rgba(255, 216, 78, 0.75),
+    0 0 85px rgba(255, 202, 51, 0.5);
+}
+
+@keyframes adminBulbFlicker {
+  0% {
+    filter: brightness(1);
+  }
+
+  18% {
+    filter: brightness(2.2);
+  }
+
+  32% {
+    filter: brightness(0.65);
+  }
+
+  47% {
+    filter: brightness(2.4);
+  }
+
+  63% {
+    filter: brightness(0.85);
+  }
+
+  100% {
+    filter: brightness(1.45);
+  }
+}
+
+.admin-login-stage.is-unlocked
+.admin-lamp-beam {
+  opacity: 1;
+
+  transform:
+    translateX(-50%)
+    scaleY(1.25);
+}
+
+/* =========================================================
+   TAP TEXT
+========================================================= */
+
+.admin-tap-hint {
+  position: absolute;
+
+  left: 24%;
+  top: calc(50% + 235px);
+
+  transform:
+    translateX(-50%);
+
+  margin: 0;
+
+  color: rgba(255, 225, 133, 0.7);
+
+  font-size: 11px;
+  font-weight: 600;
+
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+
+  animation:
+    adminHintPulse
+    2s
+    ease-in-out
+    infinite;
+
+  z-index: 7;
+}
+
+@keyframes adminHintPulse {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+/* =========================================================
+   LOGIN CARD
+========================================================= */
+
+.admin-login-card {
+  position: absolute;
+
+  left: 63%;
+  top: 50%;
+
+  width: min(
+    420px,
+    calc(100% - 40px)
+  );
+
+  padding: 38px;
+
+  transform:
+    translate(100px, -50%)
+    scale(0.96);
+
+  opacity: 0;
+
+  visibility: hidden;
+
+  border-radius: 24px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(36, 36, 36, 0.94),
+      rgba(15, 15, 15, 0.97)
+    );
+
+  border:
+    1px solid rgba(255, 255, 255, 0.10);
+
+  box-shadow:
+    0 35px 90px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
+
+  backdrop-filter:
+    blur(24px);
+
+  -webkit-backdrop-filter:
+    blur(24px);
+
+  z-index: 10;
+
+  transition:
+    opacity 0.55s ease,
+    transform 0.8s cubic-bezier(
+      0.16,
+      1,
+      0.3,
+      1
+    ),
+    visibility 0s linear 0.8s;
+}
+
+.admin-warning-card {
+  position: relative;
+  z-index: 8;
+  width: min(476px, calc(100% - 32px));
+  padding: 34px 36px 32px;
+  border: 1px solid rgba(216, 169, 74, .24);
+  border-radius: 18px;
+  background: linear-gradient(145deg, rgba(25, 23, 20, .98), rgba(12, 11, 10, .98));
+  box-shadow: 0 24px 70px rgba(0, 0, 0, .46);
+  color: #e8dfcf;
+  text-align: center;
+  animation: adminWarningAppear .35s ease both;
+}
+
+.admin-warning-icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  margin: 0 auto 16px;
+  border: 1px solid rgba(231, 189, 98, .55);
+  border-radius: 50%;
+  background: rgba(216, 169, 74, .12);
+  color: #f3c968;
+  font-size: 1.45rem;
+  font-weight: 800;
+}
+
+.admin-warning-label {
+  color: #d6af61;
+  font-size: .65rem;
+  font-weight: 750;
+  letter-spacing: .16em;
+}
+
+.admin-warning-card h1 {
+  margin: 12px 0 12px;
+  color: #f0e6d4;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.65rem, 4vw, 2.15rem);
+  font-weight: 500;
+}
+
+.admin-warning-card > p {
+  margin: 0 auto;
+  color: #a69b8c;
+  font-size: .78rem;
+  line-height: 1.65;
+}
+
+.admin-warning-card ul {
+  display: grid;
+  gap: 9px;
+  margin: 22px 0 26px;
+  padding: 15px 18px 15px 34px;
+  border: 1px solid rgba(216, 169, 74, .12);
+  border-radius: 11px;
+  background: rgba(216, 169, 74, .045);
+  color: #c8bba8;
+  font-size: .73rem;
+  line-height: 1.45;
+  text-align: left;
+}
+
+.admin-warning-card li::marker {
+  color: #d8a94a;
+}
+
+.admin-warning-confirm {
+  width: 100%;
+  min-height: 48px;
+  border: 0;
+  border-radius: 11px;
+  background: linear-gradient(135deg, #f3cf72, #c9993d);
+  color: #1a160d;
+  font: inherit;
+  font-size: .75rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  cursor: pointer;
+  box-shadow: 0 12px 26px rgba(216, 169, 74, .16);
+  transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+}
+
+.admin-warning-confirm:hover {
+  filter: brightness(1.06);
+  box-shadow: 0 16px 32px rgba(216, 169, 74, .24);
+  transform: translateY(-2px);
+}
+
+@keyframes adminWarningAppear {
+  from { opacity: 0; transform: translateY(10px) scale(.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* =========================================================
+   CARD REVEAL
+========================================================= */
+
+/* =========================================================
+   CARD REVEAL
+========================================================= */
+
+.admin-login-stage.is-unlocked
+.admin-login-card {
+  opacity: 1;
+  visibility: visible;
+
+  animation:
+    adminCardReveal
+    1.35s
+    cubic-bezier(0.22, 1, 0.36, 1)
+    0.35s
+    both;
+}
+
+@keyframes adminCardReveal {
+  0% {
+    opacity: 0;
+    transform:
+      translate(90px, -50%)
+      scale(0.97);
+  }
+
+  100% {
+    opacity: 1;
+    transform:
+      translate(0, -50%)
+      scale(1);
+  }
+}
+/* =========================================================
+   CARD TOP
+========================================================= */
+
+.admin-login-card h1 {
+  margin: 0;
+
+  color: #f7f3ea;
+
+  font-size: 29px;
+  font-weight: 700;
+
+  line-height: 1.15;
+
+  letter-spacing: -0.035em;
+}
+
+.admin-login-card > p {
+  margin:
+    12px 0 28px;
+
+  color: #99949d;
+
+  font-size: 13px;
+
+  line-height: 1.6;
+}
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.admin-login-card form {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 19px;
+}
+
+/* =========================================================
+   FIELDS
+========================================================= */
+
+.admin-login-field {
+  opacity: 0;
+
+  transform:
+    translateY(14px);
+
+  transition:
+    opacity 0.45s ease,
+    transform 0.45s ease;
+}
+
+/* Reveal fields one by one */
+
+.admin-login-stage.is-unlocked
+.admin-login-field {
+  opacity: 1;
+
+  transform:
+    translateY(0);
+}
+
+.admin-login-stage.is-unlocked
+.admin-login-field:nth-child(1) {
+  transition-delay: 0.82s;
+}
+
+.admin-login-stage.is-unlocked
+.admin-login-field:nth-child(2) {
+  transition-delay: 0.94s;
+}
+
+.admin-login-stage.is-unlocked
+.admin-login-error {
+  transition-delay: 1.02s;
+}
+
+.admin-login-field label {
+  display: block;
+
+  margin-bottom: 8px;
+
+  color: #c6c1c8;
+
+  font-size: 11px;
+
+  font-weight: 650;
+
+  letter-spacing: 0.02em;
+}
+
+.admin-login-field input {
+  width: 100%;
+  height: 50px;
+
+  padding:
+    0 15px;
+
+  border:
+    1px solid rgba(255, 255, 255, 0.09);
+
+  border-radius: 13px;
+
+  outline: none;
+
+  background:
+    rgba(5, 5, 5, 0.58);
+
+  color: #fff;
+
+  font: inherit;
+
+  font-size: 14px;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.admin-login-field input::placeholder {
+  color: #646066;
+}
+
+.admin-login-field input:hover {
+  border-color:
+    rgba(255, 255, 255, 0.14);
+}
+
+.admin-login-field input:focus {
+  border-color:
+    rgba(225, 190, 93, 0.65);
+
+  background:
+    rgba(8, 8, 8, 0.82);
+
+  box-shadow:
+    0 0 0 3px
+      rgba(225, 190, 93, 0.08),
+    0 0 22px
+      rgba(225, 190, 93, 0.06);
+}
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.admin-login-error {
+  padding:
+    11px 13px;
+
+  border:
+    1px solid
+    rgba(255, 100, 100, 0.2);
+
+  border-radius: 11px;
+
+  background:
+    rgba(255, 70, 70, 0.07);
+
+  color: #ffb5b5;
+
+  font-size: 12px;
+
+  line-height: 1.5;
+
+  animation:
+    adminErrorIn
+    0.35s
+    ease both;
+}
+
+@keyframes adminErrorIn {
+  from {
+    opacity: 0;
+    transform:
+      translateY(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform:
+      translateY(0);
+  }
+}
+
+/* =========================================================
+   LOGIN BUTTON
+========================================================= */
+
+.admin-login-card form > button {
+  width: 100%;
+
+  min-height: 52px;
+
+  margin-top: 3px;
+
+  border: 0;
+
+  border-radius: 14px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #f4d77e,
+      #c69b43
+    );
+
+  color: #191713;
+
+  cursor: pointer;
+
+  font: inherit;
+
+  font-size: 13px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.12em;
+
+  box-shadow:
+    0 12px 32px
+      rgba(208, 164, 66, 0.13);
+
+  opacity: 0;
+
+  transform:
+    translateY(14px);
+
+  transition:
+    opacity 0.45s ease 1.08s,
+    transform 0.45s ease 1.08s,
+    filter 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.admin-login-stage.is-unlocked
+.admin-login-card form > button {
+  opacity: 1;
+
+  transform:
+    translateY(0);
+}
+
+.admin-login-card form > button:hover:not(:disabled) {
+  filter: brightness(1.06);
+
+  box-shadow:
+    0 15px 38px
+      rgba(208, 164, 66, 0.2);
+
+  transform:
+    translateY(-2px);
+}
+
+.admin-login-card form > button:active:not(:disabled) {
+  transform:
+    translateY(0);
+}
+
+.admin-login-card form > button:disabled {
+  opacity: 0.55;
+
+  cursor: not-allowed;
+}
+
+/* =========================================================
+   DESKTOP COMPOSITION
+========================================================= */
+
+@media (min-width: 1001px) {
+  .admin-login-card {
+    margin-left: 0;
+  }
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1000px) {
+  .admin-lamp {
+    left: 22%;
+  }
+
+  .admin-tap-hint {
+    left: 22%;
+  }
+
+  .admin-login-card {
+    left: 64%;
+
+    width: min(
+      390px,
+      calc(100% - 30px)
+    );
+  }
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 760px) {
+  .admin-login-stage {
+    min-height: 100svh;
+  }
+
+  .admin-lamp {
+    left: 50%;
+    top: 30%;
+
+    width: 190px;
+    height: 350px;
+
+    transform:
+      translate(-50%, -50%)
+      scale(0.78);
+  }
+
+  .admin-lamp:hover {
+    transform:
+      translate(-50%, -50%)
+      scale(0.79);
+  }
+
+  .admin-tap-hint {
+    left: 50%;
+    top: calc(30% + 190px);
+  }
+
+  .admin-login-card {
+    left: 50%;
+    top: 58%;
+
+    width:
+      min(420px, calc(100% - 28px));
+
+    padding: 28px 22px;
+
+    transform:
+      translate(100px, -50%)
+      scale(0.96);
+  }
+
+  .admin-login-stage.is-unlocked
+  .admin-login-card {
+    transform:
+      translate(-50%, -50%)
+      scale(1);
+  }
+
+  .admin-lamp-beam {
+    width: 310px;
+    height: 280px;
+  }
+}
+
+/* =========================================================
+   SMALL PHONES
+========================================================= */
+
+@media (max-width: 480px) {
+  .admin-login-card {
+    top: 59%;
+
+    padding:
+      25px 19px;
+
+    border-radius: 20px;
+  }
+
+  .admin-login-card h1 {
+    font-size: 25px;
+  }
+
+  .admin-login-card > p {
+    margin-top: 9px;
+    margin-bottom: 23px;
+  }
+
+  .admin-login-field input {
+    height: 48px;
+  }
+
+  .admin-login-card form > button {
+    min-height: 50px;
+  }
+}
+
+/* =========================================================
+   VERY SMALL PHONES
+========================================================= */
+
+@media (max-width: 360px) {
+  .admin-login-card {
+    top: 60%;
+    width: calc(100% - 22px);
+    padding: 22px 17px;
+  }
+
+  .admin-login-card h1 {
+    font-size: 23px;
+  }
+
+  .admin-login-card > p {
+    font-size: 12px;
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-firefly,
+  .admin-lamp-bulb,
+  .admin-tap-hint {
+    animation: none;
+  }
+
+  .admin-login-card,
+  .admin-login-field,
+  .admin-login-card form > button,
+  .admin-lamp-beam,
+  .admin-login-ambient {
+    transition: none;
+  }
+}
+
+/* Administrative Access Footer */
+.admin-access-footer {
+  margin-top: 28px;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 0.5s ease 0.8s,
+    transform 0.5s ease 0.8s;
+}
+
+.admin-login-stage.is-unlocked .admin-access-footer {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.admin-access-line {
+  width: 100%;
+  height: 1px;
+  margin-bottom: 16px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 215, 140, 0.35),
+    transparent
+  );
+}
+
+.admin-access-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  color: rgba(255, 220, 160, 0.75);
+  margin-bottom: 9px;
+}
+
+.admin-access-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.admin-access-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #8cffb0;
+  box-shadow: 0 0 10px rgba(140, 255, 176, 0.8);
+  animation: adminAccessPulse 2s ease-in-out infinite;
+}
+
+.admin-access-secure {
+  margin-top: 8px;
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+@keyframes adminAccessPulse {
+  0%, 100% {
+    opacity: 0.45;
+    transform: scale(0.85);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

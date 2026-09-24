@@ -1,0 +1,158 @@
+export const demoData = {
+  gifts: [
+    {
+      id: "birthday",
+      name: "Birthday",
+      emoji: "🎂",
+      active: true,
+      sort_order: 1,
+    },
+    {
+      id: "rakhi",
+      name: "Rakhi",
+      emoji: "🎁",
+      active: true,
+      sort_order: 2,
+    },
+    {
+      id: "anniversary",
+      name: "Anniversary",
+      emoji: "❤️",
+      active: true,
+      sort_order: 3,
+    },
+  ],
+
+  templates: [
+    {
+      id: "t-bday-1",
+      gift_id: "birthday",
+      name: "Birthday Cute",
+      description: "Soft and cute birthday surprise",
+      price: 299,
+      preview_url: "",
+      preview_urls: [],
+      active: true,
+      sort_order: 1,
+    },
+    {
+      id: "t-bday-2",
+      gift_id: "birthday",
+      name: "Birthday Premium",
+      description: "Elegant birthday experience",
+      price: 499,
+      preview_url: "",
+      preview_urls: [],
+      active: true,
+      sort_order: 2,
+    },
+    {
+      id: "t-rakhi-1",
+      gift_id: "rakhi",
+      name: "Rakhi Memories",
+      description: "A warm family memory template",
+      price: 349,
+      preview_url: "",
+      preview_urls: [],
+      active: true,
+      sort_order: 1,
+    },
+  ],
+
+  sections: [
+    {
+      id: "s1",
+      template_id: "t-bday-1",
+      title: "Personal Details",
+      sort_order: 1,
+      active: true,
+      fields: [
+        {
+          id: "f1",
+          type: "text",
+          label: "Name",
+          placeholder: "Enter their name",
+          required: true,
+          active: true,
+          sort_order: 1,
+        },
+        {
+          id: "f2",
+          type: "text",
+          label: "Nickname",
+          placeholder: "Optional",
+          required: false,
+          active: true,
+          sort_order: 2,
+        },
+      ],
+    },
+
+    {
+      id: "s2",
+      template_id: "t-bday-1",
+      title: "Special Message",
+      sort_order: 2,
+      active: true,
+      fields: [
+        {
+          id: "f3",
+          type: "textarea",
+          label: "Birthday Message",
+          placeholder: "Write your special message...",
+          required: true,
+          active: true,
+          sort_order: 1,
+        },
+        {
+          id: "f4",
+          type: "textarea",
+          label: "Secret Message",
+          placeholder: "Something private or extra...",
+          required: false,
+          active: true,
+          sort_order: 2,
+        },
+      ],
+    },
+
+    {
+      id: "s3",
+      template_id: "t-bday-1",
+      title: "Memories",
+      sort_order: 3,
+      active: true,
+      fields: [
+        {
+          id: "f5",
+          type: "image",
+          label: "Main Photo",
+          placeholder: "",
+          required: true,
+          active: true,
+          sort_order: 1,
+          max_files: 1,
+        },
+        {
+          id: "f6",
+          type: "images",
+          label: "Memory Photos",
+          placeholder: "",
+          required: false,
+          active: true,
+          sort_order: 2,
+          max_files: 8,
+        },
+      ],
+    },
+  ],
+
+  submissions: [],
+
+  settings: {
+    whatsapp_number: "",
+    instagram_url: "",
+    contact_whatsapp_url: "",
+    theme: "theme-1",
+  },
+};

@@ -1,0 +1,333 @@
+/* =========================================================
+   SURPRIZYY — SETTINGS PANEL
+   Matches Gift / Template / Form Builder theme
+========================================================= */
+
+.settings-panel {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+
+  padding: 28px 26px 40px;
+
+  background: transparent !important;
+  color: #e8dfcf;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.settings-header {
+  margin-bottom: 26px;
+}
+
+.settings-header .sp-label {
+  display: block;
+  margin-bottom: 7px;
+
+  color: #a99578;
+  font-size: .67rem;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.settings-header h2,
+.settings-header h3 {
+  margin: 0;
+
+  color: #e8dfcf;
+  font-size: 1.35rem;
+  font-weight: 600;
+}
+
+.settings-header p {
+  margin: 7px 0 0;
+
+  color: #82786b;
+  font-size: .8rem;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   FORM LAYOUT
+========================================================= */
+
+.settings-field {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto 18px;
+}
+
+.settings-field > label {
+  display: block;
+
+  margin: 0 0 8px;
+  padding: 0;
+
+  background: transparent !important;
+  border: 0 !important;
+
+  color: #b8aa94 !important;
+
+  font-size: .7rem;
+  font-weight: 600;
+
+  letter-spacing: .06em;
+  text-transform: uppercase;
+
+  text-align: left;
+}
+
+/* =========================================================
+   INPUTS
+========================================================= */
+
+.settings-field input[type="text"],
+.settings-field input[type="email"],
+.settings-field input[type="url"] {
+  display: block;
+
+  width: 100%;
+  min-height: 44px;
+
+  box-sizing: border-box;
+
+  padding: 11px 13px;
+
+  background: #11100d !important;
+  color: #e8dfcf !important;
+
+  border: 1px solid rgba(216,169,74,.14) !important;
+  border-radius: 9px !important;
+
+  outline: none !important;
+  box-shadow: none !important;
+
+  font: inherit;
+  font-size: .8rem;
+
+  transition:
+    background .2s ease,
+    border-color .2s ease,
+    box-shadow .2s ease;
+}
+
+.settings-field input::placeholder {
+  color: #6f675c !important;
+  opacity: 1 !important;
+}
+
+.settings-field input:focus {
+  background: #13110e !important;
+  border-color: rgba(216,169,74,.42) !important;
+
+  box-shadow:
+    0 0 0 2px rgba(216,169,74,.05) !important;
+}
+
+/* =========================================================
+   MAINTENANCE MODE
+========================================================= */
+
+.settings-field:has(input[type="checkbox"]) {
+  max-width: 900px;
+}
+
+.settings-field > label:has(input[type="checkbox"]) {
+  display: flex;
+
+  align-items: center;
+  gap: 10px;
+
+  min-height: 46px;
+  box-sizing: border-box;
+
+  margin: 0;
+
+  padding: 0 14px;
+
+  background: #0d0b08 !important;
+  border: 1px solid rgba(216,169,74,.12) !important;
+  border-radius: 9px !important;
+
+  color: #c8baa4 !important;
+
+  font-size: .76rem;
+  font-weight: 500;
+
+  letter-spacing: 0;
+  text-transform: none;
+  text-align: left;
+}
+
+.settings-field input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+
+  margin: 0;
+
+  accent-color: #d6af61;
+}
+
+/* =========================================================
+   SUCCESS / ERROR
+========================================================= */
+
+.settings-success,
+.settings-error {
+  width: 100%;
+  max-width: 900px;
+
+  box-sizing: border-box;
+
+  margin: 14px auto;
+
+  padding: 11px 13px;
+
+  border-radius: 9px;
+
+  font-size: .74rem;
+  line-height: 1.4;
+}
+
+.settings-success {
+  color: #b9d5b4;
+
+  background: rgba(91,140,84,.08);
+  border: 1px solid rgba(91,140,84,.2);
+}
+
+.settings-error {
+  color: #dca4a4;
+
+  background: rgba(190,80,80,.07);
+  border: 1px solid rgba(190,80,80,.2);
+}
+
+/* =========================================================
+   SAVE BUTTON
+========================================================= */
+
+.settings-panel > button {
+  display: block;
+
+  width: auto;
+  min-height: 42px;
+
+  margin: 20px auto 0;
+  padding: 0 18px;
+
+  background: rgba(216,169,74,.11) !important;
+  color: #e8dfcf !important;
+
+  border: 1px solid rgba(216,169,74,.32) !important;
+  border-radius: 9px !important;
+
+  font: inherit;
+  font-size: .72rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background .2s ease,
+    border-color .2s ease,
+    box-shadow .2s ease,
+    transform .2s ease;
+}
+
+.settings-panel > button:hover:not(:disabled) {
+  background: rgba(216,169,74,.18) !important;
+  border-color: rgba(216,169,74,.48) !important;
+
+  box-shadow: 0 6px 20px rgba(216,169,74,.07);
+
+  transform: translateY(-1px);
+}
+
+.settings-panel > button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.sp-loading {
+  width: 100%;
+  max-width: 900px;
+  min-height: 180px;
+
+  box-sizing: border-box;
+
+  margin: 0 auto;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 30px 20px;
+
+  background: rgba(255,255,255,.015);
+  border: 1px dashed rgba(216,169,74,.12);
+  border-radius: 12px;
+
+  text-align: center;
+}
+
+.sp-loader {
+  width: 28px;
+  height: 28px;
+
+  border: 2px solid rgba(216,169,74,.14);
+  border-top-color: #d6af61;
+  border-radius: 50%;
+
+  animation: spSpin .8s linear infinite;
+}
+
+.sp-loading strong {
+  margin-top: 12px;
+
+  color: #e8dfcf;
+  font-size: .88rem;
+}
+
+.sp-loading p {
+  margin: 6px 0 0;
+
+  color: #746c61;
+  font-size: .75rem;
+}
+
+@keyframes spSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+  .settings-panel {
+    padding: 22px 16px 34px;
+  }
+
+  .settings-field,
+  .settings-success,
+  .settings-error,
+  .sp-loading {
+    max-width: 100%;
+  }
+
+  .settings-panel > button {
+    width: 100%;
+  }
+}

@@ -1,0 +1,583 @@
+/* =========================================================
+   GIFT MANAGER
+========================================================= */
+
+.admin-gift-manager .admin-section-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.admin-gift-create-button {
+  flex: 0 0 auto;
+  min-height: 40px;
+  margin-top: 19px;
+  padding: 0 16px;
+  border: 1px solid rgba(216, 169, 74, .3);
+  border-radius: 9px;
+  background: rgba(216, 169, 74, .1);
+  color: #ead7b5;
+  font: inherit;
+  font-size: .74rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .2s ease, border-color .2s ease, transform .2s ease;
+}
+
+.admin-gift-create-button:hover {
+  border-color: rgba(216, 169, 74, .55);
+  background: rgba(216, 169, 74, .18);
+  transform: translateY(-1px);
+}
+
+.admin-gift-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin: 24px 0;
+}
+
+.admin-gift-stat {
+  padding: 18px 20px;
+  border: 1px solid rgba(216, 169, 74, .12);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, .025);
+}
+
+.admin-gift-stat span {
+  display: block;
+  margin-bottom: 8px;
+  color: #8f8575;
+  font-size: .72rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.admin-gift-stat strong {
+  color: #e8dfcf;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.admin-gift-toolbar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.admin-gift-toolbar input,
+.admin-gift-toolbar select {
+  min-height: 42px;
+  border: 1px solid rgba(216, 169, 74, .14);
+  border-radius: 9px;
+  background: #0d0b08;
+  color: #e8dfcf;
+  padding: 0 13px;
+  font: inherit;
+  outline: none;
+}
+
+.admin-gift-toolbar input {
+  flex: 1;
+  color: #e8dfcf;
+  caret-color: #e7bb62;
+}
+
+.admin-gift-toolbar input::placeholder {
+  color: #6f675c;
+  opacity: 1;
+}
+
+.admin-gift-toolbar input:focus,
+.admin-gift-toolbar select:focus {
+  border-color: rgba(216, 169, 74, .4);
+}
+
+.admin-gift-toolbar select {
+  width: 140px;
+}
+
+@media (max-width: 600px) {
+  .admin-gift-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-gift-manager .admin-section-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-gift-create-button {
+    width: 100%;
+    margin-top: 0;
+  }
+
+  .admin-gift-toolbar {
+    flex-direction: column;
+  }
+
+  .admin-gift-toolbar select {
+    width: 100%;
+  }
+}
+
+/* =========================================================
+   CREATE GIFT FORM
+   (single merged rule set — was previously duplicated as a
+   plain .admin-gift-form block AND a !important override
+   block; both are combined here into one clean definition)
+========================================================= */
+
+.admin-gift-manager .admin-gift-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 22px;
+
+  background: #0d0b08;
+  border: 1px solid rgba(216, 169, 74, .12);
+  border-radius: 12px;
+  animation: gift-form-open .2s ease-out;
+}
+
+@keyframes gift-form-open {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.admin-gift-manager .admin-gift-form .admin-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+}
+
+.admin-gift-manager .admin-gift-form label {
+  color: #b8aa94;
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.admin-gift-manager .admin-gift-form input,
+.admin-gift-manager .admin-gift-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 12px 14px;
+
+  background: #11100d;
+  color: #e8dfcf;
+
+  border: 1px solid rgba(216, 169, 74, .14);
+  border-radius: 9px;
+
+  outline: none;
+  font: inherit;
+
+  transition: border-color .2s ease, background .2s ease;
+}
+
+.admin-gift-manager .admin-gift-form input::placeholder,
+.admin-gift-manager .admin-gift-form textarea::placeholder {
+  color: #6f675c;
+  opacity: 1;
+}
+
+.admin-gift-manager .admin-gift-form input:focus,
+.admin-gift-manager .admin-gift-form textarea:focus {
+  background: #13110e;
+  border-color: rgba(216, 169, 74, .4);
+}
+
+.admin-gift-manager .admin-gift-form textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.admin-gift-manager .admin-gift-form > button {
+  align-self: flex-start;
+
+  min-height: 42px;
+  padding: 0 18px;
+
+  background: rgba(216, 169, 74, .1);
+  color: #e8dfcf;
+
+  border: 1px solid rgba(216, 169, 74, .3);
+  border-radius: 9px;
+
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+
+  transition: background .2s ease, border-color .2s ease;
+}
+
+.admin-gift-manager .admin-gift-form > button:hover:not(:disabled) {
+  background: rgba(216, 169, 74, .18);
+  border-color: rgba(216, 169, 74, .45);
+}
+
+.admin-gift-manager .admin-gift-form > button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+/* =========================================================
+   EDIT GIFT MODAL
+========================================================= */
+
+.admin-gift-edit-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(0, 0, 0, .68);
+  backdrop-filter: blur(8px);
+}
+
+.admin-gift-edit-modal {
+  width: min(520px, 100%);
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+
+  padding: 24px;
+
+  border: 1px solid rgba(216, 169, 74, .16);
+  border-radius: 14px;
+
+  background: #0d0b08;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, .45);
+}
+
+.admin-gift-edit-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+
+  margin-bottom: 22px;
+}
+
+.admin-gift-edit-header span {
+  color: #a99578;
+  font-size: .7rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.admin-gift-edit-header h3 {
+  margin: 5px 0 0;
+  color: #e8dfcf;
+  font-size: 1.15rem;
+}
+
+.admin-gift-edit-header > button {
+  width: 34px;
+  height: 34px;
+
+  border: 1px solid rgba(216, 169, 74, .14);
+  border-radius: 8px;
+
+  background: transparent;
+  color: #a99578;
+
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.admin-gift-edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.admin-gift-edit-actions button {
+  min-height: 40px;
+  padding: 0 16px;
+
+  border: 1px solid rgba(216, 169, 74, .18);
+  border-radius: 8px;
+
+  background: transparent;
+  color: #cbbda8;
+
+  font: inherit;
+  cursor: pointer;
+}
+
+.admin-gift-edit-actions button:last-child {
+  background: rgba(216, 169, 74, .1);
+  color: #e8dfcf;
+  border-color: rgba(216, 169, 74, .3);
+}
+
+.admin-gift-edit-modal .admin-form-field {
+  margin-bottom: 18px;
+}
+
+.admin-gift-edit-modal .admin-form-field label {
+  display: block;
+  margin-bottom: 8px;
+  color: #b8aa94;
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.admin-gift-edit-modal .admin-form-field input,
+.admin-gift-edit-modal .admin-form-field textarea {
+  width: 100%;
+  box-sizing: border-box;
+
+  border: 1px solid rgba(216, 169, 74, .14);
+  border-radius: 9px;
+
+  background: #11100d;
+  color: #e8dfcf;
+
+  padding: 12px 14px;
+  font: inherit;
+
+  outline: none;
+
+  transition: border-color .2s ease, background .2s ease;
+}
+
+.admin-gift-edit-modal .admin-form-field input::placeholder,
+.admin-gift-edit-modal .admin-form-field textarea::placeholder {
+  color: #6f675c;
+  opacity: 1;
+}
+
+.admin-gift-edit-modal .admin-form-field input:focus,
+.admin-gift-edit-modal .admin-form-field textarea:focus {
+  border-color: rgba(216, 169, 74, .4);
+  background: #13110e;
+}
+
+.admin-gift-edit-modal .admin-form-field textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* =========================================================
+   EMPTY / LOADING STATE
+========================================================= */
+
+.admin-gift-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 180px;
+  padding: 30px 20px;
+
+  border: 1px dashed rgba(216, 169, 74, .12);
+  border-radius: 12px;
+
+  text-align: center;
+  background: rgba(255, 255, 255, .015);
+}
+
+.admin-gift-state strong {
+  margin-top: 12px;
+  color: #e8dfcf;
+  font-size: .9rem;
+}
+
+.admin-gift-state p {
+  margin: 6px 0 0;
+  color: #766e62;
+  font-size: .78rem;
+}
+
+.admin-gift-empty-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 42px;
+  height: 42px;
+
+  border: 1px solid rgba(216, 169, 74, .15);
+  border-radius: 50%;
+
+  color: #d6af61;
+  background: rgba(216, 169, 74, .05);
+}
+
+.admin-gift-loader {
+  width: 28px;
+  height: 28px;
+
+  border: 2px solid rgba(216, 169, 74, .15);
+  border-top-color: #d6af61;
+  border-radius: 50%;
+
+  animation: giftManagerSpin .8s linear infinite;
+}
+
+@keyframes giftManagerSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =========================================================
+   GIFT CARDS
+========================================================= */
+
+.admin-gift-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.admin-gift-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+  min-height: 180px;
+  padding: 20px;
+
+  border: 1px solid rgba(216, 169, 74, .12);
+  border-radius: 12px;
+
+  background: #0d0b08;
+
+  transition: border-color .2s ease, transform .2s ease, background .2s ease;
+}
+
+.admin-gift-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(216, 169, 74, .25);
+  background: #100e0b;
+}
+
+.admin-gift-card h4 {
+  margin: 0 0 8px;
+  color: #e8dfcf;
+  font-size: .95rem;
+  font-weight: 600;
+}
+
+.admin-gift-card p {
+  margin: 5px 0;
+  color: #7f776b;
+  font-size: .76rem;
+  line-height: 1.5;
+}
+
+.admin-gift-card p strong {
+  color: #a99578;
+  font-weight: 500;
+}
+
+.admin-gift-card-footer {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.admin-gift-card-footer button {
+  min-height: 34px;
+  padding: 0 11px;
+
+  border: 1px solid rgba(216, 169, 74, .15);
+  border-radius: 8px;
+
+  background: transparent;
+  color: #b8aa94;
+
+  font: inherit;
+  font-size: .72rem;
+  cursor: pointer;
+
+  transition: background .2s ease, border-color .2s ease, color .2s ease;
+}
+
+.admin-gift-card-footer button:hover {
+  background: rgba(216, 169, 74, .08);
+  border-color: rgba(216, 169, 74, .28);
+  color: #e8dfcf;
+}
+
+.admin-status-active,
+.admin-status-inactive {
+  padding: 5px 8px;
+  border-radius: 999px;
+  font-size: .65rem;
+  font-weight: 600;
+}
+
+.admin-status-active {
+  color: #b9d5b4;
+  background: rgba(91, 140, 84, .12);
+  border: 1px solid rgba(91, 140, 84, .2);
+}
+
+.admin-status-inactive {
+  color: #9a9287;
+  background: rgba(255, 255, 255, .04);
+  border: 1px solid rgba(255, 255, 255, .08);
+}
+
+/* =========================================================
+   MOBILE CLEANUP
+========================================================= */
+
+@media (max-width: 900px) {
+  .admin-gift-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .admin-gift-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-gift-card {
+    min-height: auto;
+  }
+
+  .admin-gift-card-footer {
+    align-items: stretch;
+  }
+
+  .admin-gift-card-footer button {
+    flex: 1;
+  }
+
+  .admin-status-active,
+  .admin-status-inactive {
+    align-self: center;
+  }
+}

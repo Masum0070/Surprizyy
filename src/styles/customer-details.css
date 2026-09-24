@@ -1,0 +1,492 @@
+.customer-details-panel {
+  color: #e8dfcf;
+}
+
+.customer-details-panel .admin-panel-heading {
+  align-items: flex-start;
+  margin-bottom: 0;
+}
+
+.customer-details-panel .admin-panel-heading span {
+  color: #d6af61;
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+}
+
+.customer-details-panel .admin-panel-heading h2 {
+  margin: 6px 0 0;
+  color: #f0e6d4;
+  font-size: 1.35rem;
+}
+
+.customer-details-panel .admin-panel-heading p {
+  margin: 7px 0 0;
+  color: #857a6b;
+  font-size: .78rem;
+}
+
+.customer-details-panel .admin-panel-heading > button {
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid rgba(216, 169, 74, .22);
+  border-radius: 8px;
+  background: rgba(216, 169, 74, .07);
+  color: #e3d2b8;
+  font: inherit;
+  font-size: .72rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.customer-details-panel .admin-panel-heading > button:hover:not(:disabled) {
+  border-color: rgba(216, 169, 74, .45);
+  background: rgba(216, 169, 74, .14);
+}
+
+.customer-details-panel .admin-panel-heading > button:disabled {
+  cursor: wait;
+  opacity: .55;
+}
+
+.customer-details-toolbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 190px;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.customer-details-toolbar input,
+.customer-details-toolbar select {
+  width: 100%;
+  min-height: 44px;
+  box-sizing: border-box;
+  padding: 0 13px;
+  border: 1px solid rgba(216, 169, 74, .14);
+  border-radius: 9px;
+  outline: none;
+  background: #0b0a08;
+  color: #e8dfcf;
+  font: inherit;
+  font-size: .76rem;
+}
+
+.customer-details-toolbar input::placeholder {
+  color: #716759;
+}
+
+.customer-details-toolbar input:focus,
+.customer-details-toolbar select:focus {
+  border-color: rgba(216, 169, 74, .5);
+  box-shadow: 0 0 0 3px rgba(216, 169, 74, .08);
+}
+
+.customer-details-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.customer-details-summary span {
+  padding: 6px 10px;
+  border: 1px solid rgba(216, 169, 74, .13);
+  border-radius: 999px;
+  background: rgba(216, 169, 74, .05);
+  color: #b8a789;
+  font-size: .68rem;
+  font-weight: 600;
+}
+
+.customer-details-panel > p[role="alert"] {
+  margin: 16px 0 0;
+  padding: 11px 13px;
+  border: 1px solid rgba(190, 80, 80, .25);
+  border-radius: 8px;
+  background: rgba(190, 80, 80, .08);
+  color: #e2aaa4;
+  font-size: .74rem;
+}
+
+.customer-details-panel > p:not([role="alert"]) {
+  margin: 18px 0 0;
+  padding: 28px;
+  border: 1px dashed rgba(216, 169, 74, .16);
+  border-radius: 10px;
+  color: #897d6c;
+  text-align: center;
+  font-size: .78rem;
+}
+
+.admin-customer-list {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.admin-customer-card {
+  position: relative;
+  min-width: 0;
+  padding: 14px 16px;
+  border: 1px solid rgba(216, 169, 74, .13);
+  border-radius: 13px;
+  background: #0b0a08;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
+  transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+
+.admin-customer-card:hover {
+  border-color: rgba(216, 169, 74, .3);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, .2);
+  transform: translateY(-1px);
+}
+
+.admin-customer-card .customer-identity {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(130px, 1fr) minmax(150px, 1.4fr) minmax(120px, 1fr);
+  align-items: center;
+  gap: 14px;
+  padding-right: 92px;
+}
+
+.admin-customer-card .customer-identity h3 {
+  margin: 0;
+  overflow: hidden;
+  color: #f0e6d4;
+  font-size: .95rem;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-customer-card .customer-identity p {
+  margin: 0;
+  overflow: hidden;
+  color: #a69986;
+  font-size: .75rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-customer-card .customer-identity small {
+  display: block;
+  overflow: hidden;
+  color: #756b5d;
+  font-size: .66rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-customer-card .admin-delete-button {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid rgba(210, 91, 91, .3);
+  border-radius: 8px;
+  background: rgba(210, 91, 91, .08);
+  color: #e5aaa4;
+  font: inherit;
+  font-size: .68rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.admin-customer-card .admin-delete-button:hover:not(:disabled) {
+  border-color: rgba(225, 105, 105, .55);
+  background: rgba(210, 91, 91, .16);
+  color: #ffd1cb;
+}
+
+.admin-customer-card .admin-delete-button:disabled {
+  cursor: wait;
+  opacity: .5;
+}
+
+.customer-metadata {
+  display: grid !important;
+  grid-template-columns: minmax(110px, .8fr) minmax(145px, 1.2fr) minmax(100px, .8fr) minmax(105px, .8fr) minmax(110px, .9fr) minmax(115px, .9fr) minmax(100px, .75fr) minmax(90px, .7fr);
+  gap: 7px;
+  margin: 12px 0 0 !important;
+}
+
+.customer-metadata > div {
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid rgba(255, 255, 255, .055);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, .025);
+}
+
+.customer-metadata dt {
+  margin-bottom: 4px;
+  overflow: hidden;
+  color: #827665;
+  font-size: .61rem;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.customer-metadata dd {
+  margin: 0;
+  overflow: hidden;
+  color: #d9cbb7;
+  font-size: .68rem;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.customer-metadata .metadata-status dd,
+.customer-metadata .metadata-verification dd {
+  display: inline-block;
+  max-width: 100%;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(216, 169, 74, .09);
+  color: #e3c982;
+  font-size: .63rem;
+  text-transform: capitalize;
+}
+
+.customer-metadata .metadata-verification dd {
+  background: rgba(91, 140, 84, .12);
+  color: #afd4a9;
+}
+
+.customer-metadata .metadata-email dd,
+.customer-metadata .metadata-date dd {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.customer-metadata .metadata-amount dd {
+  color: #e3c982;
+  font-size: .82rem;
+}
+
+.customer-metadata .metadata-method dd {
+  color: #c9b7e8;
+  text-transform: capitalize;
+}
+
+.customer-metadata .metadata-media dd,
+.customer-metadata .metadata-template dd {
+  color: #b8c8d2;
+}
+
+.admin-customer-card > div:last-child {
+  margin-top: 12px;
+  padding-top: 11px;
+  border-top: 1px solid rgba(255, 255, 255, .07);
+}
+
+.admin-customer-card > div:last-child strong {
+  display: block;
+  margin-bottom: 9px;
+  color: #9d907d;
+  font-size: .65rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.admin-customer-card ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.admin-customer-card li {
+  max-width: 100%;
+  padding: 7px 10px;
+  border: 1px solid rgba(216, 169, 74, .1);
+  border-radius: 7px;
+  background: rgba(216, 169, 74, .04);
+  color: #c5b7a2;
+  font-size: .69rem;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 760px) {
+  .customer-details-toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .customer-metadata {
+    grid-template-columns: repeat(4, minmax(120px, 1fr));
+    overflow-x: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-customer-card {
+    padding: 16px;
+  }
+
+  .admin-customer-card .customer-identity {
+    display: block;
+    padding-right: 0;
+    padding-top: 42px;
+  }
+
+  .admin-customer-card .admin-delete-button {
+    top: 16px;
+    right: 16px;
+  }
+
+  .customer-metadata {
+    grid-template-columns: repeat(2, minmax(125px, 1fr));
+  }
+}
+
+/* Spreadsheet-style customer table */
+.admin-customer-list {
+  display: grid;
+  gap: 0;
+  margin-top: 18px;
+  overflow-x: auto;
+  border: 1px solid rgba(216, 169, 74, .13);
+  border-radius: 10px;
+}
+
+.admin-customer-row {
+  display: grid;
+  grid-template-columns: minmax(145px, 1.1fr) minmax(190px, 1.45fr) minmax(120px, .9fr) minmax(95px, .75fr) minmax(105px, .8fr) minmax(115px, .9fr) minmax(165px, 1.25fr) 82px;
+  align-items: center;
+  min-width: 1120px;
+  gap: 14px;
+  padding: 12px 14px;
+  color: #c8bba8;
+  font-size: .72rem;
+}
+
+.admin-customer-row > span,
+.admin-customer-row .customer-identity {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-customer-row-header {
+  border-bottom: 1px solid rgba(216, 169, 74, .14);
+  background: #15120d;
+  color: #9d907d;
+  font-size: .63rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.admin-customer-card {
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, .06);
+  border-radius: 0;
+  background: #0b0a08;
+  box-shadow: none;
+  transition: background .2s ease;
+}
+
+.admin-customer-card:last-child {
+  border-bottom: 0;
+}
+
+.admin-customer-card:hover {
+  border-color: transparent;
+  background: #12100c;
+  box-shadow: none;
+  transform: none;
+}
+
+.admin-customer-card .admin-customer-row {
+  padding-right: 14px;
+}
+
+.admin-customer-card .customer-identity {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 0;
+}
+
+.admin-customer-card .customer-identity strong {
+  overflow: hidden;
+  color: #eee4d3;
+  font-size: .76rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-customer-card .customer-identity small {
+  max-width: 100%;
+  color: #746b5e;
+  font-size: .61rem;
+}
+
+.admin-customer-card .admin-delete-button {
+  position: static;
+  min-height: 30px;
+  padding: 0 9px;
+  font-size: .64rem;
+}
+
+.customer-amount {
+  color: #e3c982;
+  font-weight: 700;
+}
+
+.customer-method {
+  color: #c9b7e8;
+  text-transform: capitalize;
+}
+
+.customer-verification {
+  color: #afd4a9;
+  text-transform: capitalize;
+}
+
+.customer-secondary-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  min-width: 1120px;
+  margin: 0;
+  padding: 0 14px 10px;
+  border: 0;
+  color: #827665;
+  font-size: .64rem;
+}
+
+.customer-form-data {
+  min-width: 1120px;
+  margin: 0 14px 12px;
+  padding: 10px 12px;
+  border: 1px solid rgba(216, 169, 74, .08);
+  border-radius: 7px;
+  background: rgba(216, 169, 74, .025);
+}
+
+.customer-form-data strong {
+  display: block;
+  margin-bottom: 7px;
+  color: #9d907d;
+  font-size: .63rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 760px) {
+  .admin-customer-list {
+    border-radius: 8px;
+  }
+}

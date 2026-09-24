@@ -1,0 +1,69 @@
+.dynamic-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.dynamic-field > label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.dynamic-field input,
+.dynamic-field textarea,
+.dynamic-field select {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 10px 12px;
+
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+
+  background: #ffffff;
+  color: #111827;
+
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.dynamic-field input:focus,
+.dynamic-field textarea:focus,
+.dynamic-field select:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+
+.dynamic-field textarea {
+  resize: vertical;
+}
+
+.dynamic-checkbox-label {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.dynamic-checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.dynamic-checkbox-label span {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.field-helper {
+  font-size: 12px;
+  color: #6b7280;
+}

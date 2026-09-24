@@ -1,0 +1,1927 @@
+/* =========================================================
+   FORM BUILDER — MODAL BASE (light fallback, overridden
+   below by the .form-builder-scoped dark theme)
+========================================================= */
+
+.fb-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.fb-modal {
+  width: min(500px, 100%);
+  background: #fff;
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.2);
+}
+
+.fb-modal h3 {
+  margin: 0 0 14px;
+}
+
+.fb-modal p {
+  margin: 8px 0;
+  line-height: 1.5;
+}
+
+.fb-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.fb-modal-actions button {
+  padding: 9px 16px;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  .fb-modal-overlay {
+    padding: 14px;
+  }
+
+  .fb-modal {
+    padding: 20px;
+  }
+
+  .fb-modal-actions {
+    flex-direction: column-reverse;
+  }
+
+  .fb-modal-actions button {
+    width: 100%;
+  }
+}
+
+/* Modal form controls */
+
+.fb-modal form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.fb-modal label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.fb-modal input,
+.fb-modal select,
+.fb-modal textarea {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 10px 12px;
+
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+
+  background: #ffffff;
+  color: #111827;
+
+  font-size: 14px;
+  font-family: inherit;
+
+  outline: none;
+}
+
+.fb-modal input:focus,
+.fb-modal select:focus,
+.fb-modal textarea:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+
+.fb-modal textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.fb-modal input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  padding: 0;
+}
+
+.fb-modal label:has(input[type="checkbox"]) {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+/* =========================================================
+   SECTIONS & FIELDS (base layout — colors overridden by the
+   dark theme further down)
+========================================================= */
+
+/* BUG FIX: this selector is 3 levels deep (> div > div > h3),
+   but a near-identical rule later in the file targets a
+   4-level path (> div > div > div > h3) with the correct
+   light text color. If your markup matches THIS selector
+   instead, the heading was rendering near-black (#111827) on
+   a near-black background — effectively invisible. Fixed the
+   color here too so it's safe either way. Once you confirm
+   which depth actually matches your JSX, delete the unused one. */
+.form-builder>div>div>h3 {
+  margin: 0;
+  color: #e8dfcf;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.form-builder article {
+  margin-top: 18px;
+  padding: 20px;
+
+  background: #0d0b08;
+  border: 1px solid rgba(216, 169, 74, .12);
+  border-radius: 14px;
+
+  box-shadow: none;
+
+  transition: border-color .2s ease, background .2s ease, transform .2s ease;
+}
+
+.form-builder article:hover {
+  border-color: rgba(216, 169, 74, .22);
+  background: #100e0b;
+}
+
+.form-builder article h4 {
+  margin: 0;
+
+  color: #111827;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+/* Note: .section-header h4 (further down) is more specific and
+   overrides this to the dark-theme color for the actual section
+   title — this rule mainly matters if article h4 is used bare. */
+
+.form-builder article>p {
+  margin: 14px 0 0;
+
+  color: #6f675c;
+  font-size: .7rem;
+}
+
+/* Field list wrapper */
+
+.form-builder article>div {
+  margin-top: 16px;
+}
+
+.form-builder article>div>div {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  margin-top: 8px;
+  padding: 11px 12px;
+
+  border: 1px solid rgba(216, 169, 74, .07);
+  border-radius: 9px;
+
+  background: rgba(255, 255, 255, .018);
+
+  transition: background .2s ease, border-color .2s ease;
+}
+
+.form-builder article>div>div:hover {
+  background: rgba(216, 169, 74, .035);
+  border-color: rgba(216, 169, 74, .14);
+}
+
+.form-builder article>div>div strong {
+  color: #d8cbb8;
+  font-size: .76rem;
+}
+
+.form-builder article>div>div span {
+  color: #756d61;
+  font-size: .68rem;
+}
+
+.form-builder article>div>div p {
+  width: 100%;
+  margin: 2px 0 0;
+
+  color: #9ca3af;
+  font-size: 12px;
+}
+
+/* Buttons inside section */
+
+/* BUG FIX: this was the light-theme fallback (#fff background,
+   dark text) with no dark override anywhere in the file — any
+   button that doesn't match a more specific class (order/status
+   buttons etc.) fell through to this and rendered as a white
+   box. Switched it to the dark/transparent style used by its
+   sibling buttons. */
+.form-builder article button {
+  min-height: 36px;
+
+  padding: 7px 12px;
+
+  border: 1px solid rgba(216, 169, 74, .14);
+  border-radius: 8px;
+
+  background: transparent;
+  color: #a99578;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: background 0.15s ease, border-color 0.15s ease, color .15s ease;
+}
+
+.form-builder article button:hover {
+  background: rgba(216, 169, 74, .08);
+  border-color: rgba(216, 169, 74, .28);
+  color: #e8dfcf;
+}
+
+/* Add Field button */
+
+.form-builder article>button {
+  margin-top: 16px;
+
+  min-height: 38px;
+  padding: 0 13px;
+
+  border: 1px solid rgba(216, 169, 74, .18);
+  border-radius: 8px;
+
+  background: rgba(216, 169, 74, .06);
+  color: #b8aa94;
+
+  font-size: .7rem;
+}
+
+.form-builder article>button:hover {
+  background: rgba(216, 169, 74, .12);
+  border-color: rgba(216, 169, 74, .3);
+  color: #e8dfcf;
+}
+
+/* Section Edit/Delete buttons */
+
+.form-builder article>button:nth-last-child(1) {
+  margin-left: 8px;
+}
+
+/* Empty state */
+
+.form-builder>div>p {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+/* =========================================================
+   TEMPLATE & VERSION CONTROLS
+========================================================= */
+
+/* BUG FIX: this select had no dark override anywhere in the
+   file (only the more specific .fb-control-card select did),
+   so any <select> matching just ".form-builder select" was
+   rendering as a plain white dropdown in the dark UI. */
+.form-builder select {
+  min-height: 42px;
+  padding: 9px 12px;
+
+  border: 1px solid rgba(216, 169, 74, .14);
+  border-radius: 9px;
+
+  background: #11100d;
+  color: #e8dfcf;
+
+  font-size: 14px;
+  font-family: inherit;
+
+  cursor: pointer;
+  outline: none;
+}
+
+.form-builder select:focus {
+  border-color: rgba(216, 169, 74, .4);
+}
+
+.form-builder select:disabled {
+  background: #17140f;
+  color: #6f675c;
+  cursor: not-allowed;
+}
+
+/* =========================================================
+   FORM BUILDER ACTION BUTTONS
+========================================================= */
+
+.form-builder button {
+  font-family: inherit;
+}
+
+.form-builder>div>button,
+.form-builder>section>button {
+  min-height: 40px;
+  padding: 9px 15px;
+
+  border: 1px solid #d1d5db;
+  border-radius: 9px;
+
+  background: #ffffff;
+  color: #374151;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.form-builder>div>button:hover,
+.form-builder>section>button:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+  transform: translateY(-1px);
+}
+
+.form-builder button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+@media (max-width: 600px) {
+  .form-builder article {
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  .form-builder article>div>div {
+    align-items: flex-start;
+  }
+
+  .form-builder article button {
+    min-height: 40px;
+  }
+
+  .form-builder select {
+    width: 100%;
+  }
+
+  .fb-modal {
+    width: 100%;
+    max-height: calc(100vh - 28px);
+    padding: 20px;
+    border-radius: 14px;
+  }
+
+  .fb-modal-actions {
+    flex-direction: column-reverse;
+  }
+
+  .fb-modal-actions button {
+    width: 100%;
+  }
+}
+
+/* =========================================================
+   SECTION ORDERING
+========================================================= */
+
+.section-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.section-header>div:first-child {
+  min-width: 0;
+}
+
+.section-order-buttons {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.section-order-buttons button {
+  width: 36px;
+  height: 36px;
+  min-height: 36px;
+
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+
+  background: #ffffff;
+  color: #374151;
+
+  font-size: 18px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.section-order-buttons button:hover:not(:disabled) {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+.section-order-buttons button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* =========================================================
+   FIELD ORDERING
+========================================================= */
+
+.field-order-buttons {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: auto;
+}
+
+.field-order-buttons button {
+  width: 32px;
+  height: 32px;
+  min-height: 32px;
+
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #d1d5db;
+  border-radius: 7px;
+
+  background: #ffffff;
+  color: #374151;
+
+  font-size: 16px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.field-order-buttons button:hover:not(:disabled) {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+.field-order-buttons button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+  .field-order-buttons {
+    margin-left: 0;
+  }
+
+  .field-order-buttons button {
+    width: 36px;
+    height: 36px;
+    min-height: 36px;
+  }
+}
+
+/* =========================================================
+   SECTION / FIELD ACTIVE-INACTIVE (light fallback — the
+   !important here intentionally wins over the plain "Step 21.4"
+   duplicate that used to exist below; that dead block has been
+   removed, see notes further down)
+========================================================= */
+
+.section-status-button {
+  min-width: 76px !important;
+  height: 36px;
+  min-height: 36px !important;
+
+  padding: 6px 10px !important;
+
+  border-radius: 8px !important;
+
+  font-size: 12px !important;
+  font-weight: 700 !important;
+}
+
+.section-status-button.active {
+  background: #ecfdf5 !important;
+  border-color: #a7f3d0 !important;
+  color: #047857 !important;
+}
+
+.section-status-button.active:hover:not(:disabled) {
+  background: #d1fae5 !important;
+  border-color: #6ee7b7 !important;
+}
+
+.section-status-button.inactive {
+  background: #f3f4f6 !important;
+  border-color: #d1d5db !important;
+  color: #6b7280 !important;
+}
+
+.section-status-button.inactive:hover:not(:disabled) {
+  background: #e5e7eb !important;
+  border-color: #9ca3af !important;
+}
+
+.section-status-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.field-status-button {
+  min-width: 76px !important;
+  height: 32px;
+  min-height: 32px !important;
+
+  padding: 6px 10px !important;
+
+  border-radius: 8px !important;
+
+  font-size: 12px !important;
+  font-weight: 700 !important;
+}
+
+.field-status-button.active {
+  background: #ecfdf5 !important;
+  border-color: #a7f3d0 !important;
+  color: #047857 !important;
+}
+
+.field-status-button.active:hover:not(:disabled) {
+  background: #d1fae5 !important;
+  border-color: #6ee7b7 !important;
+}
+
+.field-status-button.inactive {
+  background: #f3f4f6 !important;
+  border-color: #d1d5db !important;
+  color: #6b7280 !important;
+}
+
+.field-status-button.inactive:hover:not(:disabled) {
+  background: #e5e7eb !important;
+  border-color: #9ca3af !important;
+}
+
+.field-status-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* =========================================================
+   SELECT OPTION ROW
+========================================================= */
+
+.select-option-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.select-option-row input {
+  flex: 1;
+  min-width: 0;
+}
+
+.select-option-row button {
+  min-width: 38px;
+  height: 38px;
+  padding: 0 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 7px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.select-option-row button:hover:not(:disabled) {
+  background: #f3f4f6;
+}
+
+.select-option-row button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* =========================================================
+   SECTION / FIELD CARD POLISH
+========================================================= */
+
+.section-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 18px;
+  margin-bottom: 18px;
+  box-shadow: 0 2px 8px rgba(17, 24, 39, 0.04);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.section-card:hover {
+  border-color: #d1d5db;
+  box-shadow: 0 4px 14px rgba(17, 24, 39, 0.06);
+}
+
+/* BUG FIX: no dark override existed for .section-card anywhere
+   (only the <article> tag itself got one). If .section-card is a
+   div distinct from the article element in your markup, it was
+   rendering as a plain white box. Added defensively — safe to
+   remove if .section-card and <article> turn out to be the same
+   element (specificity already resolves that case correctly). */
+.form-builder .section-card {
+  background: #0d0b08;
+  border-color: rgba(216, 169, 74, .12);
+  box-shadow: none;
+}
+
+.form-builder .section-card:hover {
+  border-color: rgba(216, 169, 74, .22);
+  box-shadow: none;
+}
+
+.field-row {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-top: 10px;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.field-row:hover {
+  background: #ffffff;
+  border-color: #d1d5db;
+}
+
+/* =========================================================
+   SECTION / FIELD ORDER BUTTONS (singular classnames)
+========================================================= */
+
+/* NOTE: these are SINGULAR classnames (.section-order-button /
+   .field-order-button), while every other order-button rule in
+   this file uses the PLURAL container pattern
+   (.section-order-buttons button). Check your JSX — if the
+   buttons actually use the plural pattern, this whole block
+   (and the dark override right after it) is dead code and can
+   be deleted. If they use these singular classes, they had NO
+   dark styling anywhere until the override below was added. */
+.section-order-button,
+.field-order-button {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #374151;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.section-order-button:hover:not(:disabled),
+.field-order-button:hover:not(:disabled) {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+.section-order-button:disabled,
+.field-order-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.form-builder .section-order-button,
+.form-builder .field-order-button {
+  border-color: rgba(216, 169, 74, .14);
+  background: transparent;
+  color: #a99578;
+}
+
+.form-builder .section-order-button:hover:not(:disabled),
+.form-builder .field-order-button:hover:not(:disabled) {
+  background: rgba(216, 169, 74, .08);
+  border-color: rgba(216, 169, 74, .28);
+  color: #e8dfcf;
+}
+
+/* =========================================================
+   MAIN ACTION BUTTONS (submit / add-section / add-field)
+========================================================= */
+
+.form-builder button[type="submit"],
+.add-section-button,
+.add-field-button {
+  min-height: 40px;
+  padding: 9px 16px;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-builder button[type="submit"]:hover:not(:disabled),
+.add-section-button:hover:not(:disabled),
+.add-field-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(17, 24, 39, 0.08);
+}
+
+@media (max-width: 600px) {
+  .section-card {
+    padding: 14px;
+    border-radius: 12px;
+    margin-bottom: 14px;
+  }
+
+  .field-row {
+    padding: 10px;
+  }
+
+  .select-option-row {
+    flex-wrap: wrap;
+  }
+
+  .select-option-row input {
+    width: 100%;
+    flex-basis: 100%;
+  }
+
+  .select-option-row button {
+    min-width: 40px;
+  }
+
+  .section-order-button,
+  .field-order-button {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+.empty-state {
+  padding: 18px;
+  margin-top: 10px;
+  border: 1px dashed #d1d5db;
+  border-radius: 10px;
+  background: #f9fafb;
+  color: #6b7280;
+  text-align: center;
+  font-size: 13px;
+}
+
+/* =========================================================
+   MODAL CONTENT (generic wrapper — appears unrelated to the
+   .form-builder dark theme, left as-is)
+========================================================= */
+
+.modal-content {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-content label {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.modal-content input,
+.modal-content textarea,
+.modal-content select {
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   SETTINGS PANEL (separate light-themed component, left as-is)
+========================================================= */
+
+.settings-panel {
+  width: 100%;
+  padding: 20px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  box-sizing: border-box;
+}
+
+.settings-header {
+  margin-bottom: 20px;
+}
+
+.settings-header h3 {
+  margin: 0 0 6px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.settings-header p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.settings-field {
+  margin-bottom: 16px;
+}
+
+.settings-field label {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.settings-field input[type="text"],
+.settings-field input[type="email"],
+.settings-field input[type="url"] {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  box-sizing: border-box;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #111827;
+  font-size: 14px;
+  outline: none;
+}
+
+.settings-field input:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+
+.settings-field input[type="checkbox"] {
+  width: 17px;
+  height: 17px;
+  margin-right: 7px;
+  vertical-align: middle;
+  accent-color: #6366f1;
+}
+
+.settings-panel>button {
+  min-height: 44px;
+  padding: 10px 18px;
+  border: 0;
+  border-radius: 10px;
+  background: #111827;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.settings-panel>button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.settings-success {
+  margin: 12px 0;
+  color: #15803d;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.settings-error {
+  margin: 12px 0;
+  color: #dc2626;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+@media (max-width: 600px) {
+  .settings-panel {
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  .settings-header h3 {
+    font-size: 18px;
+  }
+
+  .settings-panel>button {
+    width: 100%;
+  }
+}
+
+/* =========================================================
+   FORM BUILDER HEADER + CONTROLS
+========================================================= */
+
+.form-builder {
+  width: 100%;
+  color: #e8dfcf;
+}
+
+.fb-page-header {
+  margin-bottom: 24px;
+}
+
+.fb-header-label {
+  display: block;
+  margin-bottom: 6px;
+
+  color: #a99578;
+  font-size: .67rem;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.fb-page-header h2 {
+  margin: 0;
+  color: #e8dfcf;
+  font-size: 1.35rem;
+  font-weight: 600;
+}
+
+.fb-page-header p {
+  margin: 7px 0 0;
+  color: #82786b;
+  font-size: .8rem;
+}
+
+.fb-template-controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.fb-control-card {
+  padding: 18px;
+
+  border: 1px solid rgba(216, 169, 74, .12);
+  border-radius: 12px;
+
+  background: #0d0b08;
+}
+
+.fb-control-card label {
+  display: block;
+  margin-bottom: 8px;
+
+  color: #b8aa94;
+  font-size: .7rem;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.fb-control-card select {
+  width: 100%;
+  min-height: 42px;
+  box-sizing: border-box;
+
+  padding: 0 12px;
+
+  border: 1px solid rgba(216, 169, 74, .14);
+  border-radius: 9px;
+
+  background: #11100d;
+  color: #e8dfcf;
+
+  font: inherit;
+  outline: none;
+}
+
+.fb-control-card select:focus {
+  border-color: rgba(216, 169, 74, .4);
+}
+
+.fb-control-card select:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+@media (max-width: 700px) {
+  .fb-template-controls {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================================
+   FORM BUILDER — SECTIONS AREA (dark theme)
+========================================================= */
+
+/* Sections heading (4-level path — see the note on the
+   3-level version earlier in the file) */
+.form-builder>div>div>div>h3 {
+  margin: 0;
+  color: #e8dfcf;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.form-builder>div>div>div>button {
+  min-height: 38px;
+  padding: 0 13px;
+
+  border: 1px solid rgba(216, 169, 74, .24);
+  border-radius: 8px;
+
+  background: rgba(216, 169, 74, .08);
+  color: #d8cbb8;
+
+  font: inherit;
+  font-size: .72rem;
+  font-weight: 600;
+  cursor: pointer;
+
+  transition: background .2s ease, border-color .2s ease, color .2s ease;
+}
+
+.form-builder>div>div>div>button:hover {
+  background: rgba(216, 169, 74, .15);
+  border-color: rgba(216, 169, 74, .4);
+  color: #e8dfcf;
+}
+
+/* Section header */
+.form-builder .section-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.form-builder .section-header h4 {
+  margin: 0;
+  color: #e8dfcf;
+  font-size: .95rem;
+  font-weight: 600;
+}
+
+.form-builder .section-header p {
+  margin: 6px 0 0;
+  color: #7f776b;
+  font-size: .75rem;
+  line-height: 1.5;
+}
+
+/* Section controls */
+.form-builder .section-order-buttons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.form-builder .section-order-buttons button {
+  width: 34px;
+  height: 34px;
+  min-height: 34px;
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid rgba(216, 169, 74, .14);
+  border-radius: 8px;
+
+  background: transparent;
+  color: #a99578;
+
+  font-size: .9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.form-builder .section-order-buttons button:hover:not(:disabled) {
+  background: rgba(216, 169, 74, .08);
+  border-color: rgba(216, 169, 74, .28);
+  color: #e8dfcf;
+}
+
+.form-builder .section-order-buttons button:disabled {
+  opacity: .3;
+  cursor: not-allowed;
+}
+
+/* Active / inactive section (wins over the plain !important
+   block above due to higher specificity from .form-builder) */
+.form-builder .section-status-button {
+  min-width: 70px !important;
+  height: 34px !important;
+  min-height: 34px !important;
+  padding: 0 10px !important;
+
+  border-radius: 999px !important;
+
+  font-size: .65rem !important;
+  font-weight: 600 !important;
+}
+
+.form-builder .section-status-button.active {
+  background: rgba(91, 140, 84, .12) !important;
+  border: 1px solid rgba(91, 140, 84, .22) !important;
+  color: #b9d5b4 !important;
+}
+
+.form-builder .section-status-button.inactive {
+  background: rgba(255, 255, 255, .04) !important;
+  border: 1px solid rgba(255, 255, 255, .08) !important;
+  color: #8e877c !important;
+}
+
+/* Field ordering controls */
+.form-builder .field-order-buttons {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: auto;
+}
+
+.form-builder .field-order-buttons button {
+  width: 30px;
+  height: 30px;
+  min-height: 30px;
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid rgba(216, 169, 74, .1);
+  border-radius: 7px;
+
+  background: transparent;
+  color: #9b8d78;
+
+  font-size: .75rem;
+}
+
+.form-builder .field-order-buttons button:hover:not(:disabled) {
+  background: rgba(216, 169, 74, .08);
+  border-color: rgba(216, 169, 74, .24);
+  color: #e8dfcf;
+}
+
+/* Field active/inactive */
+.form-builder .field-status-button {
+  min-width: 66px !important;
+  height: 30px !important;
+  min-height: 30px !important;
+  padding: 0 9px !important;
+
+  border-radius: 999px !important;
+  font-size: .62rem !important;
+}
+
+.form-builder .field-status-button.active {
+  background: rgba(91, 140, 84, .1) !important;
+  border: 1px solid rgba(91, 140, 84, .2) !important;
+  color: #b9d5b4 !important;
+}
+
+.form-builder .field-status-button.inactive {
+  background: rgba(255, 255, 255, .04) !important;
+  border: 1px solid rgba(255, 255, 255, .08) !important;
+  color: #8e877c !important;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .form-builder .section-header {
+    flex-direction: column;
+  }
+
+  .form-builder .section-order-buttons {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .form-builder .field-order-buttons {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 6px;
+  }
+
+  .form-builder .field-order-buttons button {
+    width: 34px;
+    height: 34px;
+    min-height: 34px;
+  }
+
+  .form-builder article {
+    padding: 16px;
+  }
+}
+
+/* =========================================================
+   FORM BUILDER — MODALS (dark theme)
+========================================================= */
+
+.form-builder .fb-modal-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 20000 !important;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(0, 0, 0, .72) !important;
+  backdrop-filter: blur(8px);
+}
+
+.form-builder .fb-modal {
+  width: min(520px, 100%);
+  max-height: calc(100vh - 40px);
+
+  overflow-y: auto;
+
+  padding: 24px !important;
+
+  border: 1px solid rgba(216, 169, 74, .16) !important;
+  border-radius: 14px !important;
+
+  background: #0d0b08 !important;
+  color: #e8dfcf;
+
+  box-shadow: 0 24px 70px rgba(0, 0, 0, .5) !important;
+}
+
+.form-builder .fb-modal h3 {
+  margin: 0 0 20px;
+  color: #e8dfcf;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.form-builder .fb-modal p {
+  margin: 8px 0;
+  color: #81786c;
+  font-size: .76rem;
+  line-height: 1.5;
+}
+
+.form-builder .fb-modal p strong {
+  color: #d8cbb8;
+}
+
+.form-builder .fb-modal label {
+  color: #b8aa94 !important;
+  font-size: .7rem !important;
+  font-weight: 600 !important;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.form-builder .fb-modal input,
+.form-builder .fb-modal select,
+.form-builder .fb-modal textarea {
+  width: 100%;
+  box-sizing: border-box;
+
+  min-height: 42px;
+  padding: 11px 13px;
+
+  border: 1px solid rgba(216, 169, 74, .14) !important;
+  border-radius: 9px !important;
+
+  background: #11100d !important;
+  color: #e8dfcf !important;
+
+  font: inherit;
+  outline: none;
+}
+
+.form-builder .fb-modal input:focus,
+.form-builder .fb-modal select:focus,
+.form-builder .fb-modal textarea:focus {
+  border-color: rgba(216, 169, 74, .4) !important;
+  box-shadow: 0 0 0 3px rgba(216, 169, 74, .06) !important;
+}
+
+.form-builder .fb-modal textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.form-builder .fb-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.form-builder .fb-modal-actions button {
+  min-height: 40px;
+  padding: 0 15px;
+
+  border: 1px solid rgba(216, 169, 74, .15);
+  border-radius: 8px;
+
+  background: transparent;
+  color: #b8aa94;
+
+  font: inherit;
+  font-size: .72rem;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.form-builder .fb-modal-actions button:hover {
+  background: rgba(216, 169, 74, .08);
+  border-color: rgba(216, 169, 74, .28);
+  color: #e8dfcf;
+}
+
+.form-builder .fb-modal-actions button:last-child {
+  background: rgba(216, 169, 74, .1);
+  border-color: rgba(216, 169, 74, .3);
+  color: #e8dfcf;
+}
+
+.form-builder .fb-modal-actions button:last-child:hover {
+  background: rgba(216, 169, 74, .17);
+  border-color: rgba(216, 169, 74, .45);
+}
+
+.form-builder .select-option-row {
+  margin-top: 8px;
+}
+
+.form-builder .select-option-row input {
+  flex: 1;
+}
+
+.form-builder .select-option-row button {
+  min-width: 36px;
+  height: 36px;
+  min-height: 36px;
+
+  padding: 0 9px;
+
+  border: 1px solid rgba(216, 169, 74, .12);
+  border-radius: 8px;
+
+  background: transparent;
+  color: #a99578;
+}
+
+.form-builder .select-option-row button:hover:not(:disabled) {
+  background: rgba(216, 169, 74, .08);
+  border-color: rgba(216, 169, 74, .25);
+  color: #e8dfcf;
+}
+
+.form-builder .select-option-row button:disabled {
+  opacity: .3;
+}
+
+.form-builder .fb-modal input[type="checkbox"] {
+  width: 16px;
+  min-height: 16px;
+  height: 16px;
+  accent-color: #d6af61;
+}
+
+@media (max-width: 600px) {
+  .form-builder .fb-modal-overlay {
+    padding: 14px;
+  }
+
+  .form-builder .fb-modal {
+    padding: 20px !important;
+    max-height: calc(100vh - 28px);
+  }
+
+  .form-builder .fb-modal-actions {
+    flex-direction: column-reverse;
+  }
+
+  .form-builder .fb-modal-actions button {
+    width: 100%;
+  }
+}
+
+/* =========================================================
+   FORM BUILDER — LOADING + EMPTY STATES
+========================================================= */
+
+.fb-loading-state,
+.fb-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 180px;
+  padding: 30px 20px;
+
+  border: 1px dashed rgba(216, 169, 74, .12);
+  border-radius: 12px;
+
+  background: rgba(255, 255, 255, .015);
+  text-align: center;
+}
+
+.fb-loading-small {
+  min-height: 120px;
+  margin: 18px 0;
+}
+
+.fb-loader {
+  width: 28px;
+  height: 28px;
+
+  border: 2px solid rgba(216, 169, 74, .14);
+  border-top-color: #d6af61;
+  border-radius: 50%;
+
+  animation: fbSpin .8s linear infinite;
+}
+
+@keyframes fbSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.fb-loading-state strong,
+.fb-empty-state strong {
+  margin-top: 12px;
+  color: #e8dfcf;
+  font-size: .88rem;
+}
+
+.fb-loading-state p,
+.fb-empty-state p {
+  margin: 6px 0 0;
+  color: #746c61;
+  font-size: .75rem;
+  line-height: 1.5;
+}
+
+.fb-empty-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 42px;
+  height: 42px;
+
+  border: 1px solid rgba(216, 169, 74, .15);
+  border-radius: 50%;
+
+  background: rgba(216, 169, 74, .05);
+  color: #d6af61;
+}
+
+/* =========================================================
+   FORM BUILDER — FIELD ROW POLISH (dark theme)
+========================================================= */
+
+.form-builder .field-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  margin-top: 8px;
+  padding: 12px 14px;
+
+  border: 1px solid rgba(216, 169, 74, .08);
+  border-radius: 9px;
+
+  background: rgba(255, 255, 255, .018);
+}
+
+.form-builder .field-row:hover {
+  background: rgba(216, 169, 74, .035);
+  border-color: rgba(216, 169, 74, .14);
+}
+
+.form-builder .field-row strong {
+  color: #d8cbb8;
+  font-size: .76rem;
+}
+
+.form-builder .field-row span {
+  color: #756d61;
+  font-size: .68rem;
+}
+
+.form-builder .field-row p {
+  margin: 4px 0 0;
+  color: #6f675c;
+  font-size: .68rem;
+}
+
+/* Empty field area */
+.form-builder .empty-state {
+  border: 1px dashed rgba(216, 169, 74, .12);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, .012);
+  color: #746c61;
+}
+
+/* Mobile cleanup */
+@media (max-width: 600px) {
+  .form-builder .field-row {
+    flex-wrap: wrap;
+    align-items: flex-start;
+    padding: 11px;
+  }
+
+  .form-builder .field-row .field-order-buttons {
+    width: 100%;
+    margin-top: 6px;
+  }
+
+  .form-builder .section-order-buttons {
+    gap: 5px;
+  }
+
+  .form-builder .section-order-buttons button {
+    min-width: 34px;
+  }
+}
+
+/* =========================================================
+   ADD SECTION BUTTON
+========================================================= */
+
+.add-section-button {
+  min-height: 40px;
+  padding: 0 15px;
+
+  border: 1px solid rgba(216, 169, 74, .28) !important;
+  border-radius: 9px !important;
+
+  background: rgba(216, 169, 74, .09) !important;
+  color: #d8cbb8 !important;
+
+  font: inherit;
+  font-size: .72rem !important;
+  font-weight: 600 !important;
+
+  cursor: pointer;
+
+  transition: background .2s ease, border-color .2s ease, color .2s ease, transform .2s ease;
+}
+
+.add-section-button:hover {
+  background: rgba(216, 169, 74, .16) !important;
+  border-color: rgba(216, 169, 74, .42) !important;
+  color: #e8dfcf !important;
+  transform: translateY(-1px);
+}
+
+/* =========================================================
+   PLACEHOLDER COLOR (global — this is the single source of
+   truth for form-builder placeholder color; the old duplicate
+   inside .fb-modal that set the exact same values was removed)
+========================================================= */
+
+.form-builder input::placeholder,
+.form-builder textarea::placeholder {
+  color: #6f675c !important;
+  opacity: 1 !important;
+}
+
+.form-builder input:focus::placeholder,
+.form-builder textarea:focus::placeholder {
+  color: #81786c !important;
+}
+
+/* =========================================================
+   FORM BUILDER — ADD / EDIT FIELD + SECTION MODALS
+========================================================= */
+
+/* ---------- Overlay ---------- */
+
+.form-builder .fb-form-modal-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 20000 !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  padding: 20px !important;
+
+  background: rgba(0, 0, 0, 0.72) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* ---------- Modal ---------- */
+
+.form-builder .fb-form-modal {
+  width: min(520px, 100%) !important;
+  max-height: calc(100vh - 40px) !important;
+
+  overflow-y: auto !important;
+  box-sizing: border-box !important;
+
+  padding: 24px !important;
+
+  background: #0d0b08 !important;
+  color: #e8dfcf !important;
+
+  border: 1px solid rgba(216, 169, 74, 0.18) !important;
+  border-radius: 14px !important;
+
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(216, 169, 74, 0.03) !important;
+}
+
+/* ---------- Heading ---------- */
+
+.form-builder .fb-form-modal h3 {
+  margin: 0 0 20px !important;
+
+  color: #e8dfcf !important;
+  font-size: 1.05rem !important;
+  font-weight: 600 !important;
+}
+
+/* ---------- Paragraphs ---------- */
+
+.form-builder .fb-form-modal p {
+  margin: 7px 0 14px !important;
+
+  color: #81786c !important;
+  font-size: 0.76rem !important;
+  line-height: 1.5 !important;
+}
+
+.form-builder .fb-form-modal p strong {
+  color: #d8cbb8 !important;
+}
+
+/* ---------- Labels ---------- */
+
+.form-builder .fb-form-modal label {
+  display: block !important;
+
+  margin: 0 0 8px !important;
+  padding: 0 !important;
+
+  background: transparent !important;
+  color: #b8aa94 !important;
+
+  font-size: 0.7rem !important;
+  font-weight: 600 !important;
+
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+}
+
+/* ---------- Inputs / Select / Textarea ---------- */
+
+.form-builder .fb-form-modal input,
+.form-builder .fb-form-modal select,
+.form-builder .fb-form-modal textarea {
+  width: 100% !important;
+  min-height: 42px !important;
+
+  box-sizing: border-box !important;
+
+  padding: 11px 13px !important;
+
+  background: #11100d !important;
+  color: #e8dfcf !important;
+
+  border: 1px solid rgba(216, 169, 74, 0.14) !important;
+  border-radius: 9px !important;
+
+  outline: none !important;
+  box-shadow: none !important;
+
+  font: inherit !important;
+}
+
+/* ---------- Placeholder ---------- */
+
+.form-builder .fb-form-modal input::placeholder,
+.form-builder .fb-form-modal textarea::placeholder {
+  color: #6f675c !important;
+  opacity: 1 !important;
+}
+
+/* ---------- Focus ---------- */
+
+.form-builder .fb-form-modal input:focus,
+.form-builder .fb-form-modal select:focus,
+.form-builder .fb-form-modal textarea:focus {
+  background: #13110e !important;
+  color: #e8dfcf !important;
+
+  border-color: rgba(216, 169, 74, 0.42) !important;
+
+  box-shadow:
+    0 0 0 2px rgba(216, 169, 74, 0.06) !important;
+}
+
+/* ---------- Textarea ---------- */
+
+.form-builder .fb-form-modal textarea {
+  min-height: 100px !important;
+  resize: vertical !important;
+}
+
+/* ---------- Select ---------- */
+
+.form-builder .fb-form-modal select {
+  cursor: pointer;
+}
+
+.form-builder .fb-form-modal select option {
+  background: #11100d !important;
+  color: #e8dfcf !important;
+}
+
+/* ---------- Checkbox ---------- */
+
+.form-builder .fb-form-modal input[type="checkbox"] {
+  width: 16px !important;
+  height: 16px !important;
+  min-height: 16px !important;
+
+  padding: 0 !important;
+
+  accent-color: #d6af61;
+}
+
+/* ---------- Option rows ---------- */
+
+.form-builder .fb-form-modal .select-option-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+
+  width: 100% !important;
+  margin-top: 8px !important;
+}
+
+.form-builder .fb-form-modal .select-option-row input {
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+
+/* ---------- Modal buttons ---------- */
+
+.form-builder .fb-form-modal button {
+  min-height: 40px !important;
+
+  padding: 0 15px !important;
+
+  border: 1px solid rgba(216, 169, 74, 0.16) !important;
+  border-radius: 8px !important;
+
+  background: transparent !important;
+  color: #b8aa94 !important;
+
+  font: inherit !important;
+  font-size: 0.72rem !important;
+  font-weight: 600 !important;
+
+  cursor: pointer !important;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.form-builder .fb-form-modal button:hover:not(:disabled) {
+  background: rgba(216, 169, 74, 0.08) !important;
+  border-color: rgba(216, 169, 74, 0.3) !important;
+  color: #e8dfcf !important;
+
+  transform: translateY(-1px);
+}
+
+/* ---------- Primary buttons ---------- */
+
+.form-builder .fb-form-modal button:last-child {
+  background: rgba(216, 169, 74, 0.11) !important;
+  border-color: rgba(216, 169, 74, 0.32) !important;
+  color: #e8dfcf !important;
+}
+
+.form-builder .fb-form-modal button:last-child:hover:not(:disabled) {
+  background: rgba(216, 169, 74, 0.18) !important;
+  border-color: rgba(216, 169, 74, 0.48) !important;
+}
+
+/* ---------- Add Option / small buttons ---------- */
+
+.form-builder .fb-form-modal .select-option-row button {
+  min-width: 38px !important;
+  height: 36px !important;
+  min-height: 36px !important;
+
+  padding: 0 9px !important;
+
+  background: transparent !important;
+  color: #a99578 !important;
+
+  border: 1px solid rgba(216, 169, 74, 0.12) !important;
+  border-radius: 8px !important;
+}
+
+.form-builder .fb-form-modal .select-option-row button:hover:not(:disabled) {
+  background: rgba(216, 169, 74, 0.08) !important;
+  border-color: rgba(216, 169, 74, 0.25) !important;
+  color: #e8dfcf !important;
+}
+
+.form-builder .fb-form-modal button:disabled {
+  opacity: 0.35 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+}
+
+/* ---------- Bottom action area ---------- */
+
+.form-builder .fb-form-modal>div:last-child {
+  display: flex !important;
+  justify-content: flex-end !important;
+  gap: 10px !important;
+
+  margin-top: 22px !important;
+}
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 600px) {
+  .form-builder .fb-form-modal-overlay {
+    padding: 14px !important;
+  }
+
+  .form-builder .fb-form-modal {
+    width: 100% !important;
+    max-height: calc(100vh - 28px) !important;
+
+    padding: 20px !important;
+    border-radius: 12px !important;
+  }
+
+  .form-builder .fb-form-modal>div:last-child {
+    flex-direction: column-reverse !important;
+  }
+
+  .form-builder .fb-form-modal>div:last-child button {
+    width: 100% !important;
+  }
+
+  .form-builder .fb-form-modal .select-option-row {
+    flex-wrap: wrap !important;
+  }
+
+  .form-builder .fb-form-modal .select-option-row input {
+    flex-basis: 100% !important;
+  }
+}
