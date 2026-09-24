@@ -121,19 +121,7 @@ const [photos, setPhotos] = useState(() => {
       <button
         type="button"
         className="back-button"
-        onClick={() => {
-  console.log("Looks Perfect clicked");
-  console.log("template:", template);
-  console.log(
-    "checkout:",
-    sessionStorage.getItem("surprizyy_checkout")
-  );
-  console.log(
-    "draft:",
-    sessionStorage.getItem("surprizyy_draft")
-  );
-  navigate(`/create/birthday/${template}/complete`);
-}}
+        onClick={() => navigate(`/create/birthday/${template}/complete`)}
       >
         ← Back
       </button>

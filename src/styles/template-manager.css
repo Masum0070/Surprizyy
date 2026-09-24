@@ -35,6 +35,22 @@
   animation: template-form-open .2s ease-out;
 }
 
+.admin-template-form-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 14px;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(216, 169, 74, .1);
+}
+
+.admin-template-draft-status {
+  margin-right: auto;
+  color: #8f8575;
+  font-size: .7rem;
+}
+
 @keyframes template-form-open {
   from {
     opacity: 0;

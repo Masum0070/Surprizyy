@@ -89,11 +89,6 @@ export default function PublishManager() {
             "Failed to publish surprise."
         );
       }
-      console.log(
-  "PUBLISH FUNCTION RESPONSE:",
-  data
-);
-
       setMessage(
         "Surprise published successfully."
       );

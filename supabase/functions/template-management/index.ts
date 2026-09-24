@@ -737,9 +737,12 @@ console.timeEnd("template-management-list-query");
       return response(
         {
           success: false,
-          error: "Failed to update template",
+          error:
+            error.code === "23505"
+              ? "A template with this slug already exists."
+              : "Failed to update template",
         },
-        500
+        error.code === "23505" ? 409 : 500
       );
     }
 
@@ -796,6 +799,104 @@ console.timeEnd("template-management-list-query");
     return response({
       success: true,
       template: data,
+    });
+  }
+
+  // DELETE TEMPLATE
+  // Templates are intentionally only hard-deletable when inactive and
+  // unused. Versions are protected by database RESTRICT constraints so
+  // historical customer experiences cannot be removed accidentally.
+  if (action === "delete") {
+    const id =
+      typeof body.id === "string"
+        ? body.id.trim()
+        : "";
+
+    if (!id) {
+      return response(
+        { success: false, error: "Template ID is required" },
+        400
+      );
+    }
+
+    const { data: template, error: templateError } =
+      await supabaseAdmin
+        .from("templates")
+        .select("id, name, is_active")
+        .eq("id", id)
+        .maybeSingle();
+
+    if (templateError) {
+      console.error("Failed to find template for deletion:", templateError.message);
+      return response(
+        { success: false, error: "Failed to find template" },
+        500
+      );
+    }
+
+    if (!template) {
+      return response(
+        { success: false, error: "Template not found" },
+        404
+      );
+    }
+
+    if (template.is_active) {
+      return response(
+        {
+          success: false,
+          error: "Deactivate the template before deleting it.",
+        },
+        409
+      );
+    }
+
+    const { count: versionCount, error: versionError } =
+      await supabaseAdmin
+        .from("template_versions")
+        .select("id", { count: "exact", head: true })
+        .eq("template_id", id);
+
+    if (versionError) {
+      console.error("Failed to check template versions:", versionError.message);
+      return response(
+        { success: false, error: "Failed to check template usage" },
+        500
+      );
+    }
+
+    if ((versionCount || 0) > 0) {
+      return response(
+        {
+          success: false,
+          error:
+            "This template has versions and cannot be deleted. Deactivate it instead to preserve historical experiences.",
+        },
+        409
+      );
+    }
+
+    const { error: deleteError } =
+      await supabaseAdmin
+        .from("templates")
+        .delete()
+        .eq("id", id);
+
+    if (deleteError) {
+      console.error("Failed to delete template:", deleteError.message);
+      return response(
+        {
+          success: false,
+          error:
+            "Template could not be deleted because it is still referenced by other records.",
+        },
+        409
+      );
+    }
+
+    return response({
+      success: true,
+      deleted_template_id: id,
     });
   }
 

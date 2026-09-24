@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffd6ea">
+<title>Happy Birthday, Bestie 💌</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Baloo+2:wght@500;600;700;800&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="app">
+  <div id="particles"></div>
+
+  <!-- ============ PAGE 1 — WELCOME ============ -->
+  <section class="page active bg-sunrise" data-page="1">
+    <div class="topbar">
+      <button class="icon-btn" data-home>🏠</button>
+      <span class="counter">1/12</span>
+    </div>
+    <div class="decor bob" style="top:8%;left:8%;font-size:1.8rem;">☁️</div>
+    <div class="decor bob" style="top:14%;right:10%;font-size:1.6rem;animation-delay:1s;">🌸</div>
+    <div class="decor spin-slow" style="top:6%;right:16%;font-size:1.5rem;">☀️</div>
+    <div class="decor bob" style="bottom:32%;left:6%;font-size:1.5rem;animation-delay:.6s;">🦋</div>
+    <div class="content">
+      <h1 id="customerName">Hey ❤️</h1>
+      <p class="subtitle">Yes, you.<br>The birthday girl. 👀</p>
+      <div class="paper-note">I made something for you.</div>
+      <p class="subtitle" style="margin-top:6px;">And before you ask…<br>yes, I spent way too much time on this. 😂</p>
+      <div class="teddy" style="margin-top:10px;">🧸</div>
+      <button class="btn-scrap" data-next style="margin-top:6px;">okay, let me see →</button>
+      <div class="brand-line" id="brandLine1"></div>
+    </div>
+    <div class="bottom-nav">
+      <div class="spacer"></div>
+    </div>
+  </section>
+
+  <!-- ============ PAGE 2 — THE LETTER ============ -->
+  <section class="page bg-cottage" data-page="2">
+    <div class="topbar">
+      <button class="icon-btn" data-home>🏠</button>
+      <span class="counter">2/12</span>
+    </div>
+    <div class="decor bob" style="top:6%;left:8%;font-size:1.4rem;">🌷</div>
+    <div class="decor bob" style="top:8%;right:9%;font-size:1.4rem;animation-delay:.8s;">🌼</div>
+    <div class="page2-decor p2-teddy">🧸</div>
+<div class="page2-decor p2-gift">🎁</div>
+<div class="page2-decor p2-camera">📷</div>
+<div class="page2-decor p2-cloud1">☁️</div>
+<div class="page2-decor p2-cloud2">☁️</div>
+<div class="page2-decor p2-flower">🌸</div>
+<div class="page2-decor p2-ribbon">🎀</div>
+<div class="page2-decor p2-letter">💌</div>
+<div class="page2-decor p2-butterfly">🦋</div>
+<div class="page2-decor p2-cake">🧁</div>
+<div class="page2-decor p2-balloon">🎈</div>
+<div class="page2-decor p2-heart">💗</div>
+<div class="page2-decor p2-star">⭐</div>
+<div class="page2-decor p2-sparkle">✨</div>
+    <div class="content">
+      <div class="letter-wrap">
+        <div class="tape" style="top:-10px;left:20px;transform:rotate(-8deg);"></div>
+        <div class="tape" style="top:-10px;right:20px;transform:rotate(8deg);"></div>
+        <div class="letter-paper" id="letterPaper"></div>
+      </div>
+    </div>
+    <div class="bottom-nav">
+      <button class="btn-scrap ghost small" data-back>← back</button>
+      <div class="spacer"></div>
+      <button class="btn-scrap small" data-next>next →</button>
+    </div>
+  </section>
+
+  <!-- ============ PAGE 3 — FRIENDSHIP CONTRACT ============ -->
+  <section class="page bg-lav" data-page="3">
+    <div class="topbar">
+      <button class="icon-btn" data-home>🏠</button>
+      <span class="counter">3/12</span>
+    </div>
+    <div class="decor bob" style="top:10%;left:9%;font-size:1.4rem;">💌</div>
+    <div class="decor bob" style="top:14%;right:10%;font-size:1.4rem;animation-delay:.5s;">⭐️</div>
+    <div class="page3-decor p3-teddy">🧸</div>
+<div class="page3-decor p3-gift">🎁</div>
+<div class="page3-decor p3-camera">📷</div>
+<div class="page3-decor p3-cloud1">☁️</div>
+<div class="page3-decor p3-cloud2">☁️</div>
+<div class="page3-decor p3-flower">🌸</div>
+<div class="page3-decor p3-ribbon">🎀</div>
+<div class="page3-decor p3-butterfly">🦋</div>
+<div class="page3-decor p3-heart">💗</div>
+<div class="page3-decor p3-star">⭐</div>
+<div class="page3-decor p3-sparkle">✨</div>
+<div class="page3-decor p3-cake">🎂</div>
+<div class="page3-decor p3-balloon">🎈</div>
+<div class="page3-decor p3-love">💜</div>
+    <div class="content">
+      <h1 class="title purple">Before we continue…</h1>
+      <p class="subtitle">We need to establish one very important fact.</p>
+      <div class="duo-illustration">👩🏻‍🦱🤝👩🏽‍🦰</div>
+      <div class="teddy">🧸</div>
+      <div class="highlight-box">You are officially stuck with me. 😂</div>
+      <p class="fine-print">No refunds. No cancellations.</p>
+    </div>
+    <div class="bottom-nav">
+      <button class="btn-scrap ghost small" data-back>← back</button>
+      <div class="spacer"></div>
+      <button class="btn-scrap small" data-next>Next →</button>
+    </div>
+  </section>
+
+  <!-- ============ PAGE 4 — ALBUM 1: GOOD TIMES ============ -->
+  <<section class="page bg-meadow" data-page="4">
+  <div class="topbar">
+    <button class="icon-btn" data-home>🏠</button>
+    <span class="counter">4/12</span>
+  </div>
+
+  <div class="decor bob" style="top:6%;left:7%;font-size:2rem;">☁️</div>
+  <div class="decor bob" style="top:8%;right:7%;font-size:1.8rem;animation-delay:.7s;">🌈</div>
+  <div class="decor bob" style="top:25%;left:3%;font-size:2rem;animation-delay:.4s;">🧸</div>
+  <div class="decor bob" style="top:31%;right:4%;font-size:2rem;animation-delay:1s;">🎁</div>
+
+  <div class="content good-times-content">
+    <h1 class="title moss">THE GOOD TIMES 🌸</h1>
+    <p class="subtitle">Some moments are just forever…</p>
+
+    <div class="good-times-scene">
+
+      <div class="good-sticker sticker-camera">📷</div>
+      <div class="good-sticker sticker-cat">🐱</div>
+      <div class="good-sticker sticker-love">💖</div>
+      <div class="good-sticker sticker-cute">🥰</div>
+      <div class="good-sticker sticker-flower">🌸</div>
+      <div class="good-sticker sticker-sparkle">✨</div>
+
+      <div class="good-note note-one">best days 💕</div>
+      <div class="good-note note-two">our memories ✨</div>
+      <div class="good-note note-three">just us 🫶</div>
+      <div class="good-note note-four">forever cute 🌷</div>
+
+      <div class="carousel good-carousel" id="car-good"></div>
+
+    </div>
+
+    <p class="car-caption">look at us 🥹</p>
+
+    <button class="btn-scrap small" id="btn-good-next" style="margin-top:2px;">
+      show me another →
+    </button>
+  </div>
+
+  <div class="bottom-nav">
+    <button class="btn-scrap ghost small" data-back>← back</button>
+    <div class="spacer"></div>
+    <button class="btn-scrap small" data-next>next →</button>
+  </div>
+</section>
+  <!-- ============ PAGE 5 — ALBUM 2: CHAOS ============ -->
+  <section class="page bg-peachy" data-page="5">
+    <div class="topbar">
+      <button class="icon-btn" data-home>🏠</button>
+      <span class="counter">5/12</span>
+    </div>
+    <div class="decor bob" style="top:6%;left:8%;font-size:1.3rem;">📸</div>
+    <div class="decor bob" style="top:9%;right:9%;font-size:1.3rem;animation-delay:.4s;">🐱</div>
+    <div class="content">
+      <h1 class="title" style="color:#c46a1e;">THE CHAOS 😂</h1>
+      <p class="subtitle">Because life is better when it's messy.</p>
+      <div class="carousel" id="car-chaos"></div>
+      <p class="car-caption">this is chaos. 😭</p>
+      <button class="btn-scrap small" id="btn-chaos-next" style="margin-top:2px;">more chaos →</button>
+    </div>
+    <div class="bottom-nav">
+      <button class="btn-scrap ghost small" data-back>← back</button>
+      <div class="spacer"></div>
+      <button class="btn-scrap small" data-next>next →</button>
+    </div>
+  </section>
+
+  <!-- ============ PAGE 6 — ALBUM 3: ADVENTURES ============ -->
+  <!-- ALBUM 3 — OUR LITTLE ADVENTURES -->
+<section class="page adventure-page" data-page="6">
+
+  <div class="adventure-sky">
+    <div class="sky-cloud cloud-1">☁️</div>
+    <div class="sky-cloud cloud-2">☁️</div>
+    <div class="sky-cloud cloud-3">☁️</div>
+    <div class="sky-spark spark-1">✦</div>
+    <div class="sky-spark spark-2">✧</div>
+    <div class="sky-spark spark-3">✦</div>
+  </div>
+
+  <!-- TOP BAR -->
+  <div class="topbar adventure-topbar">
+    <button class="icon-btn adventure-home" data-home>🏠</button>
+    <span class="counter adventure-counter">6/12</span>
+  </div>
+
+  <!-- HEADER -->
+  <div class="adventure-header">
+
+    <div class="moon-title">☾</div>
+
+    <h1>OUR LITTLE ADVENTURES</h1>
+
+    <p>Big dreams, small plans, silly trips.</p>
+
+  </div>
+
+  <!-- SIDE NAVIGATION -->
+  <button class="adventure-arrow adventure-left" id="adv-left">
+    ‹
+  </button>
+
+  <button class="adventure-arrow adventure-right" id="adv-right">
+    ›
+  </button>
+
+
+  <!-- SCRAPBOOK AREA -->
+  <div class="adventure-board">
+
+    <!-- PAPER LAYERS -->
+    <div class="paper-layer paper-back"></div>
+    <div class="paper-layer paper-middle"></div>
+
+    <!-- LEFT POLAROID -->
+    <div class="adv-photo adv-photo-left" id="adv-photo-left">
+
+      <div class="photo-tape tape-pink-left"></div>
+
+      <div class="adv-polaroid">
+        <img id="adv-left-img" src="" alt="Adventure memory">
+        <span class="adv-handwriting" id="adv-left-caption">
+          little moments
+        </span>
+      </div>
+
+    </div>
+
+
+    <!-- RIGHT POLAROID -->
+    <div class="adv-photo adv-photo-right" id="adv-photo-right">
+
+      <div class="adv-polaroid">
+
+        <img id="adv-right-img" src="" alt="Adventure memory">
+
+        <span class="adv-handwriting" id="adv-right-caption">
+          good memories
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- MAIN PHOTO -->
+    <div class="adv-main-photo" id="adv-main-photo">
+
+      <div class="main-photo-tape"></div>
+
+      <div class="main-polaroid">
+
+        <img id="adv-main-img" src="" alt="Our adventure">
+
+        <div class="main-photo-caption">
+          our little adventure ✦
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- CAMERA -->
+    <div class="adventure-camera">
+      <div class="camera-body">
+        <div class="camera-flash"></div>
+        <div class="camera-lens">
+          <div></div>
+        </div>
+        <div class="camera-button"></div>
+      </div>
+    </div>
+
+
+    <!-- PEACH -->
+    <div class="adventure-peach">
+      🍑
+      <span>hehe!</span>
+    </div>
+
+
+    <!-- CHECKLIST -->
+    <div class="adventure-checklist">
+
+      <div class="binder-holes">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <div class="checklist-tape"></div>
+
+      <div class="check-item">
+        <span>☐</span> more trips
+      </div>
+
+      <div class="check-item">
+        <span>☐</span> more laughter
+      </div>
+
+      <div class="check-item">
+        <span>☐</span> more us
+      </div>
+
+    </div>
+
+
+    <!-- PASSPORT -->
+    <div class="adventure-passport">
+
+      <div class="passport-cover">
+
+        <div class="passport-emblem">✦</div>
+
+        <div class="passport-title">
+          PASSPORT
+        </div>
+
+        <div class="passport-lines">
+          ─────────<br>
+          ─────────
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- AIRPLANE -->
+    <div class="adventure-plane">
+      ✈
+    </div>
+
+
+    <!-- HEART -->
+    <div class="adventure-heart">
+      ♥
+    </div>
+
+
+    <!-- LITTLE DOODLES -->
+    <div class="adventure-doodle doodle-1">✧</div>
+    <div class="adventure-doodle doodle-2">♡</div>
+    <div class="adventure-doodle doodle-3">〰</div>
+
+  </div>
+
+
+  <!-- ACTION -->
+  <button
+    class="btn-scrap adventure-next"
+    id="btn-adv-next">
+    next adventure →
+  </button>
+
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav adventure-bottom-nav">
+
+    <button class="btn-scrap ghost small" data-back>
+      ← back
+    </button>
+
+    <div class="spacer"></div>
+
+    <button class="btn-scrap small" data-next>
+      next →
+    </button>
+
+  </div>
+
+</section>
+
+  <!-- ============ PAGE 7 — THE SILLY SIDE ============ -->
+  <!-- ============ PAGE 7 — THE SILLY SIDE ============ -->
+<section class="page bg-silly" data-page="7">
+  <div class="silly-sky-glow"></div>
+
+  <div class="topbar silly-topbar">
+    <button class="icon-btn silly-home" data-home>🏠</button>
+    <span class="counter silly-counter">7/12</span>
+  </div>
+
+  <!-- Background doodles -->
+  <div class="silly-doodle rainbow rainbow-one">🌈</div>
+  <div class="silly-doodle rainbow rainbow-two">🌈</div>
+  <div class="silly-doodle cloud cloud-one">☁️</div>
+  <div class="silly-doodle cloud cloud-two">☁️</div>
+  <div class="silly-doodle star star-one">✦</div>
+  <div class="silly-doodle star star-two">✦</div>
+  <div class="silly-doodle star star-three">✧</div>
+  <div class="silly-doodle heart heart-one">♡</div>
+  <div class="silly-doodle heart heart-two">♡</div>
+  <div class="silly-doodle flower flower-one">🌼</div>
+  <div class="silly-doodle flower flower-two">🌸</div>
+
+  <!-- Side navigation -->
+  <button class="silly-arrow silly-arrow-left" id="silly-left">‹</button>
+  <button class="silly-arrow silly-arrow-right" id="silly-right">›</button>
+
+  <div class="content silly-content">
+
+    <!-- Heading -->
+    <div class="silly-heading">
+      <h1>THE SILLY SIDE <span>🤪</span></h1>
+      <p>Because you + me = endless nonsense.</p>
+    </div>
+
+    <!-- Main scrapbook board -->
+    <div class="silly-board">
+
+      <!-- Top-left sticky -->
+      <div class="silly-note silly-note-one">
+        'weird but perfect'
+      </div>
+
+      <!-- Main photo -->
+      <div class="silly-main-photo">
+        <div class="silly-photo-tape"></div>
+        <img id="silly-main-img" alt="Silly memory">
+        <div class="silly-main-caption">
+          certified nonsense ✦
+        </div>
+      </div>
+
+      <!-- Top-right photo -->
+      <div class="silly-side-photo silly-photo-right">
+        <img id="silly-right-img" alt="Silly memory">
+        <div class="silly-polaroid-caption">
+          us being us ♡
+        </div>
+      </div>
+
+      <!-- Bottom-left photo -->
+      <div class="silly-side-photo silly-photo-left">
+        <img id="silly-left-img" alt="Silly memory">
+        <div class="silly-polaroid-caption">
+          zero normal moments
+        </div>
+      </div>
+
+      <!-- Bottom-right sticky -->
+      <div class="silly-note silly-note-two">
+        <div>Same</div>
+        <div>brain</div>
+        <div>brain 🧠</div>
+      </div>
+
+      <!-- Drink sticker -->
+      <div class="silly-sticker silly-drink">🥤</div>
+
+      <!-- Daisy -->
+      <div class="silly-sticker silly-daisy">🌼</div>
+
+      <!-- Little doodles -->
+      <div class="silly-mini-doodle doodle-1">♡</div>
+      <div class="silly-mini-doodle doodle-2">✦</div>
+      <div class="silly-mini-doodle doodle-3">✿</div>
+      <div class="silly-mini-doodle doodle-4">♡</div>
+
+    </div>
+
+    <!-- Action -->
+    <button class="btn-scrap silly-next" id="btn-silly-next">
+      one more memory →
+    </button>
+
+  </div>
+
+  <div class="bottom-nav">
+    <button class="btn-scrap ghost small" data-back>← back</button>
+    <div class="spacer"></div>
+    <button class="btn-scrap small" data-next>next →</button>
+  </div>
+</section>
+
+  <!-- ============ PAGE 8 — THE LITTLE THINGS ============ -->
+  <section class="page bg-cream" data-page="8">
+    <div class="topbar">
+      <button class="icon-btn" data-home>🏠</button>
+      <span class="counter">8/12</span>
+    </div>
+    <div class="decor bob" style="top:6%;left:8%;font-size:1.3rem;">🌼</div>
+    <div class="decor bob" style="top:9%;right:9%;font-size:1.3rem;animation-delay:.5s;">☕️</div>
+    <div class="content">
+      <h1 class="title" style="color:#c98b1c;">THE LITTLE THINGS 🌼</h1>
+      <p class="subtitle">The smallest moments, the biggest happiness.</p>
+      <div class="collage" id="collage"></div>
+      <div class="checklist">
+        <div>☐ good food</div><div>☐ deep talks</div><div>☐ random calls</div><div>☐ you &amp; me</div><div>☐ always ❤️</div>
+      </div>
+      <button class="btn-scrap small" data-next>keep going →</button>
+    </div>
+    <div class="bottom-nav">
+      <button class="btn-scrap ghost small" data-back>← back</button>
+      <div class="spacer"></div>
+      <div class="spacer"></div>
+    </div>
+  </section>
+
+  <!-- ============ PAGE 9 — WHY YOU'RE SPECIAL ============ -->
+  <section class="page bg-dream" data-page="9">
+  <div class="topbar">
+    <button class="icon-btn" data-home>🏠</button>
+    <span class="counter">9/12</span>
+  </div>
+
+  <div class="decor bob" style="top:6%;left:8%;font-size:1.3rem;">💜</div>
+  <div class="decor bob" style="top:9%;right:9%;font-size:1.3rem;">🌷</div>
+<div class="decor page9-d1">✨</div>
+<div class="decor page9-d2">🌸</div>
+<div class="decor page9-d3">💜</div>
+<div class="decor page9-d4">📸</div>
+<div class="decor page9-d5">🍕</div>
+<div class="decor page9-d6">⭐</div>
+<div class="decor page9-d7">💕</div>
+  <div class="content">
+    <h1 class="title purple">REASONS WHY YOU'RE SPECIAL 💜</h1>
+    <p class="subtitle">Because you're just… you.</p>
+
+    <div class="notebook" id="notebook"></div>
+  </div>
+
+  <div class="bottom-nav">
+    <button class="btn-scrap ghost small" data-back>← back</button>
+    <div class="spacer"></div>
+    <button class="btn-scrap small" data-next>next page →</button>
+  </div>
+</section>
+
+  <!-- ============ PAGE 10 — OUR FOREVER ============ -->
+  <section class="page bg-sunset" data-page="10">
+    <div class="topbar">
+      <button class="icon-btn" data-home>🏠</button>
+      <span class="counter">10/12</span>
+    </div>
+    
+    <div class="content">
+      <h1 class="title" style="color:#8a2e6b;">OUR FOREVER 🌈</h1>
+      <p class="subtitle">Different chapters… same story.</p>
+      <div class="forever-photo">
+        <img id="foreverImg" alt="us, together">
+        <div class="forever-labels">
+          <span>more laughs</span><span>more adventures</span><span>more chaos</span><span>more us</span>
+        </div>
+      </div>
+      <p class="handwrite" style="font-size:1.3rem;color:#8a2e6b;">same crazy friendship forever ❤️</p>
+    </div>
+    <div class="bottom-nav">
+      <button class="btn-scrap ghost small" data-back>← back</button>
+      <div class="spacer"></div>
+      <button class="btn-scrap small" data-next>let's keep going →</button>
+    </div>
+  </section>
+
+  <!-- ============ PAGE 11 — FINAL SURPRISE ============ -->
+<section class="page bg-gift" data-page="11">
+
+  <div class="topbar">
+    <button class="icon-btn" data-home>🏠</button>
+    <span class="counter">11/12</span>
+  </div>
+
+  <button class="page-arrow page-arrow-left" data-back>‹</button>
+  <button class="page-arrow page-arrow-right" data-next>›</button>
+
+  <!-- cozy room decorations -->
+  <div class="room-decor decor-gift">🎁</div>
+  <div class="room-decor decor-flower">🌷</div>
+  <div class="room-decor decor-heart">💖</div>
+  <div class="room-decor decor-star">✨</div>
+
+  <div class="content final-room">
+
+    <h1 class="final-title">FINAL SURPRISE <span>💌</span></h1>
+    <p class="final-subtitle">Just a little reminder...</p>
+
+    <div class="final-scene">
+
+      <!-- LEFT PROPS -->
+      <div class="props-left">
+        <div class="gift gift-one">🎁</div>
+        <div class="gift gift-two">🎀</div>
+        <div class="flower-pot">🌷</div>
+      </div>
+
+      <!-- LETTER -->
+      <div class="final-note">
+
+        <div class="note-heart heart-one">💖</div>
+        <div class="note-heart heart-two">💜</div>
+        <div class="note-heart heart-three">💗</div>
+        <div class="note-heart heart-four">💜</div>
+
+        <div class="note-lines"></div>
+
+        <div class="note-content">
+          <p>You make</p>
+          <p>everything brighter.</p>
+
+          <p>Thank you for being</p>
+          <p>you. I'm so lucky</p>
+          <p>to have you in my life.</p>
+
+          <p>Happy Birthday, bestie. ❤️</p>
+
+          <p class="note-sign">- your forever friend</p>
+        </div>
+
+        <button class="final-next" data-next>
+          one last thing →
+        </button>
+
+      </div>
+
+      <!-- RIGHT PROPS -->
+      <div class="props-right">
+        <div class="teddy">🧸</div>
+        <div class="camera">📷</div>
+        <div class="toast">🍞</div>
+        <div class="heart-box">💖</div>
+      </div>
+
+      <!-- FOREGROUND -->
+      <div class="front-gift">🎁</div>
+      <div class="front-gloss">💄</div>
+
+    </div>
+
+    <div class="floor-sparkles">✦　💗　✦　✨　✦　💜　✦</div>
+
+  </div>
+</section>
+
+  <!-- ============ PAGE 12 — FINAL BIRTHDAY SCREEN ============ -->
+  <section class="page bg-night" data-page="12">
+    <div class="topbar">
+      <button class="icon-btn" data-home>🏠</button>
+      <span class="counter">12/12</span>
+    </div>
+    <div class="stars-static" id="starsStatic"></div>
+    <div class="decor bob" style="top:8%;right:12%;font-size:1.8rem;">🌙</div>
+    <div class="content">
+      <h1 class="cake-title" id="finalName">Happy Birthday<br>Cutie! 🎂❤️</h1>
+      <p class="night-msg">To my favorite idiot, ❤️
+
+Life feels a little brighter and a lot more fun with a bestie like you.
+ Thank you for every silly conversation, every laugh, every crazy moment,
+  and every memory we’ve created together. I’m genuinely lucky to have you in my life.
+   No matter where life takes us, I hope we always stay this crazy, comfortable,
+    and unforgettable. Keep smiling, keep being your amazing self, 
+    and never forget that you’ll always have a bestie cheering for you.
+Happy Birthday, bestie. 🎂❤️
+Here’s to more memories, more nonsense, more laughter, and many more adventures together. ✨</p>
+      <div class="teddy">🧸</div>
+      <button class="btn-scrap" id="restartBtn">Explore Again ⟳</button>
+      <div class="brand-line" id="brandLine2"></div>
+    </div>
+    <div class="bottom-nav">
+      <button class="btn-scrap ghost small" data-back>← back</button>
+      <div class="spacer"></div>
+      <div class="spacer"></div>
+    </div>
+  </section>
+
+  <button class="music-btn" id="musicBtn" aria-label="toggle music">🔇</button>
+  <audio id="bgm" loop preload="none"></audio>
+</div>
+
+
+<!--
+  Load order matters: config.js first (defines CONFIG), then app.js
+  (the engine that reads CONFIG and runs the site).
+-->
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="app.js"></script>
+</body>
+</html>

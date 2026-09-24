@@ -422,20 +422,7 @@ Deno.serve(
       const specialMessage =
         cleanString(
           values.special_message
-        );
-
-      if (
-        !specialMessage
-      ) {
-        return jsonResponse(
-          {
-            success: false,
-            error:
-              "Special message is required",
-          },
-          400
-        );
-      }
+        ) || "A little surprise made especially for you.";
 
       if (!paymentId) {
         return jsonResponse(

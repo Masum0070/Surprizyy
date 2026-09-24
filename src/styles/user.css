@@ -2991,3 +2991,16 @@ body {
     border-radius: var(--radius-md);
   }
 }
+.custom-surprise-viewer {
+  width: 100%;
+  min-height: 100vh;
+  background: #fff;
+}
+
+.surprise-template-frame {
+  display: block;
+  width: 100%;
+  min-height: 100vh;
+  height: 100vh;
+  border: 0;
+}

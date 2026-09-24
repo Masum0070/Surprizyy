@@ -23,6 +23,7 @@ const [debouncedSearch, setDebouncedSearch] = useState("");
 const [statusFilter, setStatusFilter] = useState("all");
 const [giftFilter, setGiftFilter] = useState("all");
 const [previewFile, setPreviewFile] = useState(null);
+const [formDirty, setFormDirty] = useState(false);
 
 useEffect(() => {
   const timer = setTimeout(() => {
@@ -58,9 +59,19 @@ async function callApi(action, extra = {}) {
     );
 
   if (error) {
-    throw new Error(
-      error.message || "Request failed."
-    );
+    let message = error.message || "Request failed.";
+
+    if (error.context) {
+      try {
+        const responseBody = await error.context.text();
+        const parsedBody = JSON.parse(responseBody);
+        message = parsedBody?.error || message;
+      } catch {
+        // Keep the original Supabase error when the response is not JSON.
+      }
+    }
+
+    throw new Error(message);
   }
 
   if (!data?.success) {
@@ -253,6 +264,7 @@ useEffect(() => {
       ...current,
       [name]: value,
     }));
+    setFormDirty(true);
   }
 
   function makeSlug(value) {
@@ -274,6 +286,7 @@ useEffect(() => {
           ? makeSlug(value)
           : current.slug,
     }));
+    setFormDirty(true);
   }
 
   async function handleCreate(event) {
@@ -329,6 +342,7 @@ useEffect(() => {
       setMessage("Template created successfully.");
       setShowCreateForm(false);
       setPreviewFile(null);
+      setFormDirty(false);
       await loadData();
     } catch (err) {
       setError(
@@ -376,6 +390,7 @@ async function handleUpdate(event) {
   try {
     await callApi("update", {
       id: editingId,
+      gift_type_id: form.gift_type_id,
       name: form.name.trim(),
       slug: form.slug.trim(),
       description: form.description.trim(),
@@ -390,6 +405,7 @@ async function handleUpdate(event) {
     setEditingId(null);
     setShowCreateForm(false);
     setPreviewFile(null);
+    setFormDirty(false);
 
     setForm({
       gift_type_id: "",
@@ -399,6 +415,8 @@ async function handleUpdate(event) {
       base_price: "",
       discount_percentage: "0",
     });
+    setPreviewFile(null);
+    setFormDirty(false);
 
     setMessage("Template updated successfully.");
     await loadData();
@@ -413,9 +431,12 @@ async function handleUpdate(event) {
   }
 }
 
-  async function handleDeactivate(id) {
+  async function handleToggleActive(template) {
+    const nextActive = !template.is_active;
     const confirmed = window.confirm(
-      "Deactivate this template?"
+      nextActive
+        ? `Activate "${template.name}"?`
+        : `Deactivate "${template.name}"?`
     );
 
     if (!confirmed) return;
@@ -424,17 +445,47 @@ async function handleUpdate(event) {
     setMessage("");
 
     try {
-      await callApi("deactivate", {
-        id,
+      await callApi("update", {
+        id: template.id,
+        is_active: nextActive,
       });
 
-      setMessage("Template deactivated.");
+      setMessage(
+        nextActive
+          ? "Template activated."
+          : "Template deactivated."
+      );
       await loadData();
     } catch (err) {
       setError(
         err instanceof Error
           ? err.message
-          : "Failed to deactivate template."
+          : nextActive
+            ? "Failed to activate template."
+            : "Failed to deactivate template."
+      );
+    }
+  }
+
+  async function handleDelete(template) {
+    const confirmed = window.confirm(
+      `Permanently delete "${template.name}"? Only inactive templates with no versions can be deleted.`
+    );
+
+    if (!confirmed) return;
+
+    setError("");
+    setMessage("");
+
+    try {
+      await callApi("delete", { id: template.id });
+      setMessage("Template deleted.");
+      await loadData();
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to delete template."
       );
     }
   }
@@ -521,6 +572,8 @@ async function handleUpdate(event) {
               base_price: "",
               discount_percentage: "0",
             });
+            setPreviewFile(null);
+            setFormDirty(false);
 
             setError("");
             setMessage("");
@@ -629,6 +682,8 @@ async function handleUpdate(event) {
                   discount_percentage: "0",
                 });
 
+                setPreviewFile(null);
+                setFormDirty(false);
                 setError("");
                 setMessage("");
               }}
@@ -754,9 +809,10 @@ async function handleUpdate(event) {
               id="template-preview"
               type="file"
               accept="image/*"
-              onChange={(event) =>
-                setPreviewFile(event.target.files?.[0] || null)
-              }
+              onChange={(event) => {
+                setPreviewFile(event.target.files?.[0] || null);
+                setFormDirty(true);
+              }}
             />
             <small>
               Images are compressed before being saved to the public preview bucket.
@@ -764,19 +820,26 @@ async function handleUpdate(event) {
           </div>
         </div>
 
-        <button
-          type="submit"
-          className="admin-template-submit"
-          disabled={saving}
-        >
-          {saving
-            ? editingId
-              ? "Updating..."
-              : "Creating..."
-            : editingId
-              ? "Update Template"
-              : "Create Template"}
-        </button>
+        <div className="admin-template-form-footer">
+          <small className="admin-template-draft-status">
+            {formDirty
+              ? "Draft changes are local until you save this form."
+              : "No unsaved changes."}
+          </small>
+          <button
+            type="submit"
+            className="admin-template-submit"
+            disabled={saving}
+          >
+            {saving
+              ? editingId
+                ? "Updating..."
+                : "Creating..."
+              : editingId
+                ? "Update Template"
+                : "Create Template"}
+          </button>
+        </div>
         </form>
       )}
 
@@ -875,9 +938,8 @@ async function handleUpdate(event) {
                 </div>
 
                 <div className="admin-template-actions">
-                  {template.is_active && (
-                    <>
-                      <button
+                  <>
+                    <button
                         type="button"
                         onClick={() => {
                           setEditingId(template.id);
@@ -907,16 +969,20 @@ async function handleUpdate(event) {
                         Edit
                       </button>
 
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleDeactivate(template.id)
-                        }
-                      >
-                        Deactivate
-                      </button>
-                    </>
-                  )}
+                    <button
+                      type="button"
+                      onClick={() => handleToggleActive(template)}
+                    >
+                      {template.is_active ? "Deactivate" : "Activate"}
+                    </button>
+                  </>
+                  <button
+                    type="button"
+                    className="admin-template-delete-button"
+                    onClick={() => handleDelete(template)}
+                  >
+                    Delete
+                  </button>
                 </div>
 
                 <div className="template-versions">

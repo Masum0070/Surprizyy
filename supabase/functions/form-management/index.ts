@@ -314,7 +314,7 @@ Deno.serve(async (req) => {
         .update(updates)
         .eq("id", id)
         .select("*")
-        .single();
+        .maybeSingle();
 
     if (error) {
       console.error(error);
@@ -322,9 +322,16 @@ Deno.serve(async (req) => {
       return response(
         {
           success: false,
-          error: "Failed to update section",
+          error: error.message || "Failed to update section",
         },
         500
+      );
+    }
+
+    if (!data) {
+      return response(
+        { success: false, error: "Section was not found or could not be updated." },
+        404
       );
     }
 
@@ -479,7 +486,10 @@ Deno.serve(async (req) => {
       return response(
         {
           success: false,
-          error: "Failed to create field",
+          error:
+            error.code === "23505"
+              ? "A field with this key already exists in this section."
+              : error.message || "Failed to create field",
         },
         500
       );
@@ -615,7 +625,7 @@ Deno.serve(async (req) => {
         .update(updates)
         .eq("id", id)
         .select("*")
-        .single();
+        .maybeSingle();
 
     if (error) {
       console.error(error);
@@ -623,9 +633,19 @@ Deno.serve(async (req) => {
       return response(
         {
           success: false,
-          error: "Failed to update field",
+          error:
+            error.code === "23505"
+              ? "A field with this key already exists in this section."
+              : error.message || "Failed to update field",
         },
         500
+      );
+    }
+
+    if (!data) {
+      return response(
+        { success: false, error: "Field was not found or could not be updated." },
+        404
       );
     }
 

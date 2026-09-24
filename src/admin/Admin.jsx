@@ -796,10 +796,7 @@ startAdminSessionMonitor();
                 className={`admin-dashboard-lamp ${dashboardLampOn ? "is-on" : ""
                   }`}
                 aria-label={dashboardLampOn ? "Turn lamp off" : "Turn lamp on"}
-                onClick={() => {
-                  console.log("DASHBOARD LAMP CLICKED");
-                  setDashboardLampOn((current) => !current);
-                }}
+                onClick={() => setDashboardLampOn((current) => !current)}
               >
                 <div className="admin-lamp-glow" />
                 <div className="admin-lamp-shade" />

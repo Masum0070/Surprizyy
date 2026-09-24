@@ -11,6 +11,7 @@ export default function Memories({ navigate, template }) {
   const [compressingPhotos, setCompressingPhotos] = useState(false);
   const [sections, setSections] = useState([]);
   const [fieldValues, setFieldValues] = useState({});
+  const [musicOptions, setMusicOptions] = useState([]);
   const [formError, setFormError] = useState("");
 
   let checkoutData = {};
@@ -161,6 +162,37 @@ export default function Memories({ navigate, template }) {
     };
   }, [maxPhotos]);
 
+  useEffect(() => {
+    let active = true;
+
+    async function loadMusicOptions() {
+      const musicFields = sections.flatMap((section) => section.fields || [])
+        .filter((field) => ["music", "song"].includes(field.field_type));
+
+      if (!musicFields.length) {
+        setMusicOptions([]);
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke("public-music");
+
+      if (!active) return;
+
+      if (error || !data?.success) {
+        setFormError(error?.message || data?.error || "Failed to load songs.");
+        return;
+      }
+
+      setMusicOptions(Array.isArray(data.songs) ? data.songs : []);
+    }
+
+    loadMusicOptions();
+
+    return () => {
+      active = false;
+    };
+  }, [sections]);
+
   async function handlePhotoUpload(event, fieldKey = "memory_photos", limit = maxPhotos) {
     if (!paymentVerified) {
       alert("Payment verification is required before uploading memories.");
@@ -244,6 +276,7 @@ export default function Memories({ navigate, template }) {
       for (const field of section.fields || []) {
         if (
           field.required &&
+          !prePaymentFieldKeys.has(field.field_key) &&
           !["file", "image", "images"].includes(field.field_type) &&
           !String(fieldValues[field.field_key] || "").trim()
         ) {
@@ -269,31 +302,46 @@ export default function Memories({ navigate, template }) {
       const draft = JSON.parse(
         sessionStorage.getItem("surprizyy_draft") || "{}"
       );
+      const normalizedValues = {
+        ...fieldValues,
+        recipient_name: draft.recipientName,
+        customer_email: draft.customerEmail,
+        customer_phone: draft.customerPhone,
+        special_message:
+          fieldValues.special_message ||
+          Object.values(fieldValues).find(
+            (value) => typeof value === "string" && value.trim()
+          ) ||
+          "",
+      };
       const { data, error } = await supabase.functions.invoke(
         "create-surprise",
         {
           body: {
             templateVersionId: checkoutData.templateVersionId,
             paymentId: checkoutData.paymentId,
-            values: {
-              ...fieldValues,
-              recipient_name: draft.recipientName,
-              customer_email: draft.customerEmail,
-              customer_phone: draft.customerPhone,
-              special_message:
-                fieldValues.special_message ||
-                Object.values(fieldValues).find(
-                  (value) => typeof value === "string" && value.trim()
-                ) ||
-                "",
-              ...fieldValues,
-            },
+            values: normalizedValues,
           },
         }
       );
 
       if (error || !data?.success) {
-        alert(data?.error || error?.message || "Failed to create your surprise.");
+        let message =
+          data?.error ||
+          error?.message ||
+          "Failed to create your surprise.";
+
+        if (error?.context) {
+          try {
+            const responseBody = await error.context.text();
+            const parsedBody = JSON.parse(responseBody);
+            message = parsedBody?.error || message;
+          } catch {
+            // Keep the original Supabase error when the response is not JSON.
+          }
+        }
+
+        setFormError(message);
         return;
       }
 
@@ -469,7 +517,20 @@ sessionStorage.setItem(
                       {field.label}
                       {field.required && " *"}
                     </label>
-                    {field.field_type === "textarea" ? (
+                    {["music", "song"].includes(field.field_type) ? (
+                      <select
+                        id={`post-payment-${field.field_key}`}
+                        value={value}
+                        onChange={(event) => update(event.target.value)}
+                      >
+                        <option value="">Choose a song...</option>
+                        {musicOptions.map((song) => (
+                          <option key={song.value} value={song.value}>
+                            {song.label}
+                          </option>
+                        ))}
+                      </select>
+                    ) : field.field_type === "textarea" ? (
                       <textarea
                         id={`post-payment-${field.field_key}`}
                         rows="5"

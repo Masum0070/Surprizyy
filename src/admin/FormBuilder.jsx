@@ -19,6 +19,7 @@ function FormBuilder() {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [showFieldForm, setShowFieldForm] = useState(false);
+  const [creatingField, setCreatingField] = useState(false);
 
   const [showEditFieldForm, setShowEditFieldForm] = useState(false);
   const [showSectionForm, setShowSectionForm] = useState(false);
@@ -83,8 +84,20 @@ function FormBuilder() {
       );
 
     if (error) {
+      let responseError = "";
+      if (error.context instanceof Response) {
+        try {
+          const responseBody = await error.context.clone().json();
+          responseError = responseBody?.error || "";
+        } catch {
+          responseError = "";
+        }
+      }
       throw new Error(
-        error.message || "Request failed."
+        data?.error ||
+        responseError ||
+        error.message ||
+        "Request failed."
       );
     }
 
@@ -436,7 +449,9 @@ function FormBuilder() {
           <span className="fb-header-label">FORM BUILDER</span>
           <h2>Form Builder</h2>
           <p>
-            Build the customer form for each template version.
+            Build the customer form for each template version. Field and
+            section edits are drafts until you press Save Changes; ordering
+            and active-status toggles save immediately.
           </p>
         </div>
       </div>
@@ -699,8 +714,8 @@ function FormBuilder() {
                         <button
                           type="button"
                           onClick={() => {
-                            setDeleteSectionTarget(section);
-                            setShowDeleteSectionForm(true);
+                            setDeleteFieldTarget(field);
+                            setShowDeleteFieldForm(true);
                           }}
                         >
                           Delete
@@ -719,6 +734,7 @@ function FormBuilder() {
                       placeholder: "",
                       helperText: "",
                       options: "",
+                      maxFiles: 1,
                       required: false,
                     });
                     setShowFieldForm(true);
@@ -739,6 +755,15 @@ function FormBuilder() {
                   }}
                 >
                   Edit
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDeleteSectionTarget(section);
+                    setShowDeleteSectionForm(true);
+                  }}
+                >
+                  Delete
                 </button>
 
 
@@ -833,10 +858,9 @@ function FormBuilder() {
                     <option value="tel">Phone</option>
                     <option value="date">Date</option>
                     <option value="select">Select</option>
+                    <option value="music">Music from template bucket</option>
                     <option value="checkbox">Checkbox</option>
                     <option value="file">File / Image</option>
-                    <option value="image">Single Photo</option>
-                    <option value="images">Multiple Photos</option>
                     <option value="image">Single Photo</option>
                     <option value="images">Multiple Photos</option>
                   </select>
@@ -1068,6 +1092,9 @@ function FormBuilder() {
                         return;
                       }
 
+                      setError("");
+                      setMessage("");
+
                       const options =
                         fieldForm.fieldType === "select"
                           ? fieldForm.options
@@ -1076,8 +1103,9 @@ function FormBuilder() {
                             .filter(Boolean)
                           : null;
 
+                      setCreatingField(true);
                       try {
-                        await callApi("create_field", {
+                        const data = await callApi("create_field", {
                           section_id: fieldFormSection.id,
                           field_key: fieldForm.fieldKey.trim(),
                           label: fieldForm.label.trim(),
@@ -1103,22 +1131,27 @@ function FormBuilder() {
                           is_active: true,
                         });
 
+                        if (!data.field) {
+                          throw new Error("Field was not returned after saving.");
+                        }
+
+                        setFields((current) => [...current, data.field]);
                         setShowFieldForm(false);
                         setFieldFormSection(null);
 
                         setMessage("Field created successfully.");
-
-                        await loadForm(selectedVersion);
                       } catch (err) {
                         setError(
                           err instanceof Error
                             ? err.message
                             : "Failed to create field."
                         );
+                      } finally {
+                        setCreatingField(false);
                       }
                     }}
                   >
-                    Create Field
+                    {creatingField ? "Saving..." : "Create Field"}
                   </button>
                 </div>
               </div>
@@ -1201,6 +1234,7 @@ function FormBuilder() {
                     <option value="tel">Phone</option>
                     <option value="date">Date</option>
                     <option value="select">Select</option>
+                    <option value="music">Music from template bucket</option>
                     <option value="checkbox">Checkbox</option>
                     <option value="file">File / Image</option>
                     <option value="image">Single Photo</option>
@@ -1327,7 +1361,7 @@ function FormBuilder() {
                           : null;
 
                       try {
-                        await callApi("update_field", {
+                        const data = await callApi("update_field", {
                           id: editFieldForm.id,
                           field_key: editFieldForm.fieldKey.trim(),
                           label: editFieldForm.label.trim(),
@@ -1346,11 +1380,18 @@ function FormBuilder() {
                             : null,
                         });
 
+                        if (!data.field) {
+                          throw new Error("Field was not returned after saving.");
+                        }
+
+                        setFields((current) =>
+                          current.map((field) =>
+                            field.id === data.field.id ? data.field : field
+                          )
+                        );
                         setShowEditFieldForm(false);
 
                         setMessage("Field updated successfully.");
-
-                        await loadForm(selectedVersion);
                       } catch (err) {
                         setError(
                           err instanceof Error
@@ -1451,20 +1492,28 @@ function FormBuilder() {
                       }
 
                       try {
-                        await callApi("update_section", {
+                        const data = await callApi("update_section", {
                           id: editSectionForm.id,
                           title: editSectionForm.title.trim(),
                           description:
                             editSectionForm.description.trim(),
                         });
 
+                        if (!data.section) {
+                          throw new Error("Section was not returned after saving.");
+                        }
+
+                        setSections((current) =>
+                          current.map((section) =>
+                            section.id === data.section.id ? data.section : section
+                          )
+                        );
                         setShowEditSectionForm(false);
 
                         setMessage(
                           "Section updated successfully."
                         );
 
-                        await loadForm(selectedVersion);
                       } catch (err) {
                         setError(
                           err instanceof Error

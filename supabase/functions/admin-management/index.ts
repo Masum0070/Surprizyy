@@ -221,9 +221,46 @@ Deno.serve(async (req) => {
         throw error;
       }
 
+      const userIds = [...new Set(
+        (data || [])
+          .flatMap((log) => [log.actor_user_id, log.target_user_id])
+          .filter((userId): userId is string => typeof userId === "string" && userId.length > 0),
+      )];
+      const profileByUserId = new Map<string, { email: string | null; name: string | null }>();
+
+      if (userIds.length > 0) {
+        const { data: profiles, error: profilesError } = await supabase
+          .from("admin_profiles")
+          .select("user_id, email, name")
+          .in("user_id", userIds);
+
+        if (profilesError) {
+          throw profilesError;
+        }
+
+        for (const profile of profiles || []) {
+          profileByUserId.set(profile.user_id, {
+            email: profile.email || null,
+            name: profile.name || null,
+          });
+        }
+      }
+
+      const auditLogs = (data || []).map((log) => ({
+        ...log,
+        actor_email: profileByUserId.get(log.actor_user_id)?.email || null,
+        actor_name: profileByUserId.get(log.actor_user_id)?.name || null,
+        target_email: log.target_user_id
+          ? profileByUserId.get(log.target_user_id)?.email || null
+          : null,
+        target_name: log.target_user_id
+          ? profileByUserId.get(log.target_user_id)?.name || null
+          : null,
+      }));
+
       return jsonResponse({
         success: true,
-        audit_logs: data || [],
+        audit_logs: auditLogs,
         limit,
         offset,
       });

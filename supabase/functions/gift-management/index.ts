@@ -390,6 +390,101 @@ if (action === "create") {
     });
   }
 
+  /*
+   * DELETE GIFT
+   */
+  if (action === "delete") {
+    const id =
+      typeof body?.id === "string"
+        ? body.id.trim()
+        : "";
+
+    if (!id) {
+      return response(
+        {
+          success: false,
+          error: "Gift ID is required",
+        },
+        400
+      );
+    }
+
+    const { data: gift, error: giftError } = await supabaseAdmin
+      .from("gift_types")
+      .select("id, name, is_active")
+      .eq("id", id)
+      .maybeSingle();
+
+    if (giftError) {
+      console.error("Failed to load gift before deletion:", giftError);
+      return response(
+        { success: false, error: "Unable to verify gift before deletion" },
+        500
+      );
+    }
+
+    if (!gift) {
+      return response(
+        { success: false, error: "Gift was not found" },
+        404
+      );
+    }
+
+    if (gift.is_active) {
+      return response(
+        {
+          success: false,
+          error: "Deactivate the gift before deleting it.",
+        },
+        409
+      );
+    }
+
+    const { count, error: referenceError } = await supabaseAdmin
+      .from("templates")
+      .select("id", { count: "exact", head: true })
+      .eq("gift_type_id", id);
+
+    if (referenceError) {
+      console.error("Failed to check gift references:", referenceError);
+      return response(
+        { success: false, error: "Unable to verify gift references" },
+        500
+      );
+    }
+
+    if ((count || 0) > 0) {
+      return response(
+        {
+          success: false,
+          error: `This gift is used by ${count} template${count === 1 ? "" : "s"}. Remove those template references before deleting it.`,
+        },
+        409
+      );
+    }
+
+    const { error: deleteError } = await supabaseAdmin
+      .from("gift_types")
+      .delete()
+      .eq("id", id);
+
+    if (deleteError) {
+      console.error("Failed to delete gift:", deleteError);
+      return response(
+        {
+          success: false,
+          error: deleteError.message || "Failed to delete gift",
+        },
+        500
+      );
+    }
+
+    return response({
+      success: true,
+      deleted_id: id,
+    });
+  }
+
   return response(
     {
       success: false,

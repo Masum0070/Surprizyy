@@ -193,8 +193,24 @@
   background: rgba(216, 169, 74, .14);
   color: #f0d79b;
 }
-.admin-audit-row { width: 100%; border-top: 0; border-left: 0; border-right: 0; font: inherit; cursor: pointer; }
-.admin-audit-filters { display: flex; gap: 8px; margin-bottom: 12px; }
+.admin-audit-row {
+  width: 100%;
+  min-width: 1060px;
+  grid-template-columns: 160px minmax(220px, 1.35fr) 140px 120px minmax(220px, 1.35fr) 90px;
+  column-gap: 18px;
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+  font: inherit;
+  cursor: pointer;
+}
+.admin-audit-row > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.admin-audit-filters { display: flex; gap: 10px; margin-bottom: 14px; }
 .admin-audit-filters input { flex: 1; }
 .audit-success { color: #afd4a9; text-transform: capitalize; }
 .audit-failed { color: #e2aaa4; text-transform: capitalize; }

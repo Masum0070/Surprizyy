@@ -529,6 +529,18 @@
   color: #e8dfcf;
 }
 
+.admin-gift-card-footer .admin-gift-delete-button {
+  border-color: rgba(209, 104, 93, .35);
+  background: rgba(116, 43, 37, .1);
+  color: #e2aaa4;
+}
+
+.admin-gift-card-footer .admin-gift-delete-button:hover {
+  border-color: rgba(209, 104, 93, .7);
+  background: rgba(116, 43, 37, .25);
+  color: #f0c1ba;
+}
+
 .admin-status-active,
 .admin-status-inactive {
   padding: 5px 8px;

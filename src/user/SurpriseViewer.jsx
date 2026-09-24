@@ -1,5 +1,34 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "../core/supabase/client";
+
+const templateFiles = import.meta.glob(
+  "../surprises/**/index.html",
+  {
+    eager: true,
+    import: "default",
+    query: "?url",
+  }
+);
+
+function normalizeTemplateSlug(value) {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/\.html$/, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+function getTemplateUrl(slug) {
+  const wantedSlug = normalizeTemplateSlug(slug);
+
+  const entry = Object.entries(templateFiles).find(([filePath]) => {
+    const folderName = filePath.split("/").slice(-2, -1)[0];
+    return normalizeTemplateSlug(folderName) === wantedSlug;
+  });
+
+  return entry?.[1] || null;
+}
 
 function SurpriseViewer() {
   const [loading, setLoading] = useState(true);
@@ -7,6 +36,7 @@ function SurpriseViewer() {
   const [error, setError] = useState("");
   const [opened, setOpened] = useState(false);
   const [activeMemory, setActiveMemory] = useState(null);
+  const templateFrameRef = useRef(null);
 
   useEffect(() => {
     async function loadSurprise() {
@@ -137,6 +167,8 @@ function SurpriseViewer() {
 
   const surprise = result.surprise;
   const template = result.template;
+  const publicId =
+    window.location.pathname.split("/").filter(Boolean)[1] || "";
   const templateSlug = template?.slug || "birthday-cute";
   const isBirthdayCute =
     templateSlug === "birthday-cute" ||
@@ -147,6 +179,45 @@ function SurpriseViewer() {
     result.media?.find(
       (item) => item.field_key === "main_photo"
     )?.signed_url;
+
+  const templateFileUrl = getTemplateUrl(templateSlug);
+
+  if (templateFileUrl) {
+    const templateUrl = new URL(templateFileUrl, window.location.href);
+    templateUrl.searchParams.set("id", publicId);
+    templateUrl.searchParams.set("hosted", "1");
+
+    const templateData = {
+      recipientName: surprise.recipient_name || "",
+      message: getValue("special_message"),
+      values: result.values || [],
+      media: result.media || [],
+    music: result.music || null,
+    template,
+    };
+
+    return (
+      <main className="custom-surprise-viewer">
+        <iframe
+          ref={templateFrameRef}
+          title="Birthday surprise"
+          src={templateUrl.href}
+          className="surprise-template-frame"
+          loading="lazy"
+          sandbox="allow-scripts allow-same-origin allow-popups"
+          onLoad={() => {
+            templateFrameRef.current?.contentWindow?.postMessage(
+              {
+                type: "surprizyy-template-data",
+                payload: templateData,
+              },
+              window.location.origin
+            );
+          }}
+        />
+      </main>
+    );
+  }
 
   const memoryPhotos =
     result.media?.filter(

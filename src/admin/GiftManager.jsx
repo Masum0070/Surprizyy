@@ -154,6 +154,33 @@ function GiftManager() {
   }
 }
 
+  async function handleDelete(gift) {
+    if (gift.is_active) {
+      setError("Deactivate the gift before deleting it.");
+      return;
+    }
+
+    if (!window.confirm(`Permanently delete "${gift.name}"? This cannot be undone.`)) {
+      return;
+    }
+
+    setSaving(true);
+    setError("");
+
+    try {
+      await callGiftManagement("delete", { id: gift.id });
+      setGifts((current) => current.filter((item) => item.id !== gift.id));
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Unable to delete gift."
+      );
+    } finally {
+      setSaving(false);
+    }
+  }
+
   const filteredGifts = gifts.filter((gift) => {
     const matchesSearch =
       gift.name
@@ -397,6 +424,17 @@ function GiftManager() {
                       ? "Deactivate"
                       : "Activate"}
                   </button>
+
+                  {!gift.is_active && (
+                    <button
+                      type="button"
+                      className="admin-gift-delete-button"
+                      onClick={() => handleDelete(gift)}
+                      disabled={saving}
+                    >
+                      Delete
+                    </button>
+                  )}
                 </div>
               </div>
             ))}

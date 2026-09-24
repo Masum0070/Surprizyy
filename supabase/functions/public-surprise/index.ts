@@ -157,6 +157,33 @@ Deno.serve(async (req) => {
       throw valuesError;
     }
 
+    const selectedSong = (values || []).find((value) =>
+      ["music", "song", "background_music"].includes(value.field_key) ||
+      /(^|_)(music|song)(_|$)/i.test(value.field_key || "")
+    )?.value_text;
+
+    let music = null;
+
+    if (selectedSong) {
+      const safeSongName = selectedSong.split("/").pop() || "";
+
+      if (
+        safeSongName === selectedSong &&
+        /\.(mp3|wav|ogg|m4a|aac)$/i.test(safeSongName)
+      ) {
+        const { data: signedSong } = await supabase.storage
+          .from("template-music")
+          .createSignedUrl(safeSongName, 60 * 10);
+
+        if (signedSong?.signedUrl) {
+          music = {
+            name: safeSongName,
+            signed_url: signedSong.signedUrl,
+          };
+        }
+      }
+    }
+
     const { data: media, error: mediaError } =
       await supabase
         .from("media_files")
@@ -239,6 +266,7 @@ Deno.serve(async (req) => {
         surprise,
         template,
         values: values || [],
+        music,
         media: mediaWithUrls,
       }),
       {
