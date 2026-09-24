@@ -29,6 +29,7 @@ export default function AdminUser() {
   const [approvalConfirmed, setApprovalConfirmed] = useState(false);
   const [openActionsId, setOpenActionsId] = useState(null);
   const [showAdd, setShowAdd] = useState(false);
+  const [showAdminPassword, setShowAdminPassword] = useState(false);
   const [filters, setFilters] = useState({ search: "", action: "", result: "" });
   const [form, setForm] = useState({ name: "", email: "", mobile: "", password: "", role: "manager", permissions: {} });
   const [loading, setLoading] = useState(true);
@@ -90,34 +91,50 @@ export default function AdminUser() {
   useEffect(() => { loadAdmins(); }, [loadAdmins]);
   useEffect(() => { if (tab === "audit") loadLogs(); }, [tab, loadLogs]);
 
+  async function approveAdmin(admin) {
+    setSaving(true);
+    setError("");
+    try {
+      const data = await call("approve", { user_id: admin.user_id });
+      setAdmins((current) =>
+        current.map((item) => item.id === admin.id ? data.admin : item)
+      );
+      if (selected?.id === admin.id) setSelected(data.admin);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to approve administrator.");
+    } finally {
+      setSaving(false);
+      setApprovalTarget(null);
+      setApprovalConfirmed(false);
+    }
+  }
+
+  function openApprovalWarning(admin) {
+    setApprovalTarget(admin);
+    setApprovalConfirmed(false);
+  }
+
+  async function deleteAdmin(admin) {
+    if (!window.confirm(`Delete ${admin.name || admin.email}? This permanently removes the Auth account and administrator data.`)) return;
+    setSaving(true);
+    setError("");
+    try {
+      await call("delete", { user_id: admin.user_id });
+      setAdmins((current) => current.filter((item) => item.id !== admin.id));
+      if (selected?.id === admin.id) setSelected(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to delete administrator.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
   async function toggleAdmin(admin) {
     if (admin.role === "super_admin") {
       setError("The protected Super Admin account cannot be disabled from this panel.");
       return;
     }
 
-    async function approveAdmin(admin) {
-      setSaving(true);
-      setError("");
-      try {
-        const data = await call("approve", { user_id: admin.user_id });
-        setAdmins((current) =>
-          current.map((item) => item.id === admin.id ? data.admin : item)
-        );
-        if (selected?.id === admin.id) setSelected(data.admin);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to approve administrator.");
-      } finally {
-        setSaving(false);
-        setApprovalTarget(null);
-        setApprovalConfirmed(false);
-      }
-    }
-
-    function openApprovalWarning(admin) {
-      setApprovalTarget(admin);
-      setApprovalConfirmed(false);
-    }
     const next = !admin.active;
     if (!window.confirm(`${next ? "Enable" : "Disable"} ${admin.name}?`)) return;
     setSaving(true);
@@ -193,7 +210,18 @@ export default function AdminUser() {
           <input placeholder="Full name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
           <input type="email" placeholder="Email address" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
           <input placeholder="Phone number" value={form.mobile} onChange={(e) => setForm({ ...form, mobile: e.target.value })} />
-          <input type="password" minLength="8" placeholder="Temporary password (8+ characters)" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required />
+          <div className="admin-password-field">
+            <input type={showAdminPassword ? "text" : "password"} minLength="8" placeholder="Temporary password (8+ characters)" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required />
+            <button
+              type="button"
+              className="admin-password-toggle"
+              onClick={() => setShowAdminPassword((current) => !current)}
+              aria-label={showAdminPassword ? "Hide administrator password" : "Show administrator password"}
+              aria-pressed={showAdminPassword}
+            >
+              <span className="admin-eye-icon" aria-hidden="true" />
+            </button>
+          </div>
           <select value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })}>{roles.map((role) => <option key={role} value={role}>{role.replace("_", " ")}</option>)}</select>
           <div className="admin-permission-grid">{permissionOptions.map(([permission, label]) => <label key={permission}><input type="checkbox" checked={form.permissions[permission] === true} onChange={(e) => setForm({ ...form, permissions: { ...form.permissions, [permission]: e.target.checked } })} /> {label}</label>)}</div>
           <button type="submit" disabled={saving}>{saving ? "Creating..." : "Create Administrator"}</button>
@@ -204,17 +232,21 @@ export default function AdminUser() {
         <>
           {loading ? <p>Loading administrators...</p> : (
             <div className="admin-users-table">
-              <div className="admin-users-table-row admin-users-table-head"><span>Administrator</span><span>Role</span><span>Status</span><span>Last login</span><span>Last activity</span><span>Actions</span></div>
+              <div className="admin-users-table-row admin-users-table-head"><span>Administrator</span><span>Role</span><span>Status</span><span>Approval</span><span>Last login</span><span>Last activity</span><span>Actions</span></div>
               {admins.map((admin) => (
                 <div className="admin-users-table-row" key={admin.id}>
                   <div className="admin-user-main"><strong>{admin.name || "Unnamed administrator"}</strong><span>{admin.email}</span><small>{admin.mobile || "No phone"} · Created {formatDate(admin.created_at)}</small></div>
                   <span className="admin-user-role">{admin.role?.replace("_", " ")}</span>
                   <span className={`admin-user-status ${admin.active ? "is-active" : "is-inactive"}`}>{admin.active ? "Active" : "Disabled"}</span>
+                  <span className={`admin-user-approval ${admin.approval_status === "approved" ? "is-approved" : "is-pending"}`}>
+                    {admin.approval_status === "approved" ? "Approved" : "Pending approval"}
+                  </span>
                   <span>{formatDate(admin.last_login_at)}</span>
                   <span>{formatDate(admin.updated_at)}</span>
                   {admin.role === "super_admin" ? (
                     <span className="admin-user-protected">Protected</span>
                   ) : (
+                    <div className="admin-row-actions">
                     <div className="admin-action-menu">
                       <button
                         type="button"
@@ -222,15 +254,27 @@ export default function AdminUser() {
                         aria-expanded={openActionsId === admin.id}
                         onClick={() => setOpenActionsId((current) => current === admin.id ? null : admin.id)}
                       >
-                        Actions <span aria-hidden="true">⌄</span>
+                        Actions <span className="admin-action-chevron" aria-hidden="true" />
                       </button>
                       {openActionsId === admin.id && (
                         <div className="admin-action-menu-list" role="menu">
                           <button type="button" onClick={() => { setSelected(admin); setOpenActionsId(null); }}>View Details</button>
-                          {!admin.active && <button type="button" onClick={() => { openApprovalWarning(admin); setOpenActionsId(null); }}>Approve access</button>}
-                          <button type="button" onClick={() => { toggleAdmin(admin); setOpenActionsId(null); }}>{admin.active ? "Disable" : "Enable"}</button>
+                          {admin.approval_status !== "approved" ? (
+                            <button type="button" onClick={() => { openApprovalWarning(admin); setOpenActionsId(null); }}>Approve access</button>
+                          ) : (
+                            <button type="button" onClick={() => { toggleAdmin(admin); setOpenActionsId(null); }}>{admin.active ? "Disable" : "Enable"}</button>
+                          )}
                         </div>
                       )}
+                    </div>
+                    <button
+                      type="button"
+                      className="admin-user-delete"
+                      onClick={() => deleteAdmin(admin)}
+                      disabled={saving}
+                    >
+                      Delete
+                    </button>
                     </div>
                   )}
                 </div>
@@ -299,7 +343,7 @@ export default function AdminUser() {
                 onClick={() => approveAdmin(approvalTarget)}
                 disabled={!approvalConfirmed || saving}
               >
-                {saving ? "Approving..." : "Approve access"}
+                {saving ? "Approving..." : "Approve & activate"}
               </button>
             </div>
           </section>

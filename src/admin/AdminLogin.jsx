@@ -5,6 +5,7 @@ import "../styles/admin-login.css";
 function AdminLogin({ onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [unlocked, setUnlocked] = useState(false);
@@ -270,19 +271,30 @@ function AdminLogin({ onLogin }) {
                 Password
               </label>
 
-              <input
-                id="admin-password"
-                type="password"
-                value={password}
-                onChange={(event) =>
-                  setPassword(
-                    event.target.value
-                  )
-                }
-                placeholder="Admin password"
-                autoComplete="current-password"
-                required
-              />
+              <div className="admin-login-password-field">
+                <input
+                  id="admin-password"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(event) =>
+                    setPassword(
+                      event.target.value
+                    )
+                  }
+                  placeholder="Admin password"
+                  autoComplete="current-password"
+                  required
+                />
+                <button
+                  type="button"
+                  className="admin-password-toggle"
+                  onClick={() => setShowPassword((current) => !current)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  aria-pressed={showPassword}
+                >
+                  <span className="admin-eye-icon" aria-hidden="true" />
+                </button>
+              </div>
             </div>
 
             {error && (

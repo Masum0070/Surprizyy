@@ -389,6 +389,33 @@ if (action === "refresh_session") {
     const user = auth.user!;
     const admin = auth.admin!;
 
+    if (admin.approval_status === "pending") {
+      return jsonResponse(
+        {
+          success: false,
+          error: "Your administrator access is awaiting Super Admin approval.",
+        },
+        403
+      );
+    }
+
+    if (admin.approval_status === "rejected") {
+      return jsonResponse(
+        {
+          success: false,
+          error: "Your administrator access has been rejected.",
+        },
+        403
+      );
+    }
+
+    if (!admin.active) {
+      return jsonResponse(
+        { success: false, error: "This admin account is inactive." },
+        403
+      );
+    }
+
     const now =
       new Date().toISOString();
 

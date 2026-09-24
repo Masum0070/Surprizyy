@@ -865,6 +865,23 @@
     rgba(255, 255, 255, 0.14);
 }
 
+.admin-login-password-field { position: relative; }
+.admin-login-password-field input { width: 100%; padding-right: 46px; }
+.admin-login-password-field .admin-password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  width: 34px;
+  min-height: 32px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  transform: translateY(-50%);
+}
+.admin-login-password-field .admin-password-toggle:hover {
+  border: 0;
+  background: transparent;
+}
 .admin-login-field input:focus {
   border-color:
     rgba(225, 190, 93, 0.65);

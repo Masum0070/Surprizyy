@@ -74,6 +74,7 @@ const ADMIN_SELECT = `
   created_at,
   updated_at,
   last_login_at
+  ,approval_status
 `;
 
 async function writeAuditLog(
@@ -397,7 +398,8 @@ Deno.serve(async (req) => {
             email,
             mobile: mobile || null,
             role,
-            active: true,
+            active: false,
+            approval_status: "pending",
             permissions:
               cleanedPermissions,
           })
@@ -646,7 +648,7 @@ Deno.serve(async (req) => {
       const { data: currentAdmin, error: currentAdminError } =
         await supabase
           .from("admin_profiles")
-          .select("role, active")
+          .select("role, active, approval_status")
           .eq("user_id", userId)
           .maybeSingle();
 
@@ -669,6 +671,23 @@ Deno.serve(async (req) => {
           },
           403
         );
+      }
+
+      if (
+        currentAdmin.approval_status !== "approved" &&
+        Object.prototype.hasOwnProperty.call(updateData, "active")
+      ) {
+        return jsonResponse(
+          {
+            success: false,
+            error: "This administrator must be approved before changing active status.",
+          },
+          400
+        );
+      }
+
+      if (updateData.active === false) {
+        updateData.approval_status = "pending";
       }
 
       const removesSuperAdminAccess =
@@ -780,6 +799,12 @@ Deno.serve(async (req) => {
           400
         );
       }
+      if (currentAdmin.approval_status === "approved") {
+        return jsonResponse(
+          { success: false, error: "This administrator has already been approved. Use Enable or Disable for status changes." },
+          400
+        );
+      }
 
       const { error: authUpdateError } =
         await supabase.auth.admin.updateUserById(userId, {
@@ -793,10 +818,11 @@ Deno.serve(async (req) => {
         );
       }
 
-      const { data, error } = await supabase
+      const { data, error } =       await supabase
         .from("admin_profiles")
         .update({
           active: true,
+          approval_status: "approved",
           updated_at: new Date().toISOString(),
         })
         .eq("user_id", userId)
@@ -814,6 +840,79 @@ Deno.serve(async (req) => {
       );
 
       return jsonResponse({ success: true, admin: data });
+    }
+
+    if (action === "delete") {
+      const userId =
+        typeof body?.user_id === "string"
+          ? body.user_id.trim()
+          : "";
+
+      if (!userId) {
+        return jsonResponse(
+          { success: false, error: "user_id is required." },
+          400
+        );
+      }
+
+      if (userId === auth.user?.id) {
+        return jsonResponse(
+          { success: false, error: "You cannot delete your own administrator account." },
+          400
+        );
+      }
+
+      const { data: target, error: lookupError } = await supabase
+        .from("admin_profiles")
+        .select("user_id, role, name, email")
+        .eq("user_id", userId)
+        .maybeSingle();
+
+      if (lookupError) throw lookupError;
+      if (!target) {
+        return jsonResponse(
+          { success: false, error: "Admin not found." },
+          404
+        );
+      }
+      if (target.role === "super_admin") {
+        return jsonResponse(
+          { success: false, error: "The protected Super Admin account cannot be deleted." },
+          403
+        );
+      }
+
+      const { error: authDeleteError } =
+        await supabase.auth.admin.deleteUser(userId);
+
+      if (authDeleteError) {
+        return jsonResponse(
+          { success: false, error: authDeleteError.message },
+          400
+        );
+      }
+
+      const { error: profileDeleteError } = await supabase
+        .from("admin_profiles")
+        .delete()
+        .eq("user_id", userId);
+
+      if (profileDeleteError) throw profileDeleteError;
+
+      await supabase
+        .from("admin_sessions")
+        .delete()
+        .eq("user_id", userId);
+
+      await writeAuditLog(
+        auth.user!,
+        auth.admin!.role,
+        "admin.deleted",
+        userId,
+        { email: target.email, name: target.name }
+      );
+
+      return jsonResponse({ success: true, deleted_user_id: userId });
     }
 
     return jsonResponse(

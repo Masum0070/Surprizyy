@@ -162,6 +162,7 @@ const profilePromise = adminClient
     email,
     role,
     active,
+    approval_status,
     permissions
   `)
   .eq("user_id", user.id)
@@ -220,6 +221,24 @@ if (!admin) {
     status: 403,
     error:
       "Admin profile not found",
+  };
+}
+
+if (admin.approval_status === "pending") {
+  return {
+    ok: false,
+    status: 403,
+    error:
+      "Administrator approval is pending. Ask the Super Admin to approve this account.",
+  };
+}
+
+if (admin.approval_status === "rejected") {
+  return {
+    ok: false,
+    status: 403,
+    error:
+      "Administrator access has been rejected.",
   };
 }
 
