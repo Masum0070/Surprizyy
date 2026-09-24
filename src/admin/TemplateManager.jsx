@@ -388,7 +388,7 @@ async function handleUpdate(event) {
   setSaving(true);
 
   try {
-    await callApi("update", {
+    const data = await callApi("update", {
       id: editingId,
       gift_type_id: form.gift_type_id,
       name: form.name.trim(),
@@ -401,6 +401,18 @@ async function handleUpdate(event) {
       is_active: true,
     });
     await uploadPreview(editingId, previewFile);
+
+    if (!data.template) {
+      throw new Error("Template was not returned after saving.");
+    }
+
+    setTemplates((current) =>
+      current.map((template) =>
+        template.id === data.template.id
+          ? { ...template, ...data.template }
+          : template
+      )
+    );
 
     setEditingId(null);
     setShowCreateForm(false);
@@ -419,7 +431,6 @@ async function handleUpdate(event) {
     setFormDirty(false);
 
     setMessage("Template updated successfully.");
-    await loadData();
   } catch (err) {
     setError(
       err instanceof Error

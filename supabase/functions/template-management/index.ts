@@ -731,7 +731,12 @@ console.timeEnd("template-management-list-query");
     if (error) {
       console.error(
         "Failed to update template:",
-        error.message
+        {
+          message: error.message,
+          code: error.code,
+          details: error.details,
+          hint: error.hint,
+        }
       );
 
       return response(
@@ -740,7 +745,7 @@ console.timeEnd("template-management-list-query");
           error:
             error.code === "23505"
               ? "A template with this slug already exists."
-              : "Failed to update template",
+              : error.message || "Failed to update template",
         },
         error.code === "23505" ? 409 : 500
       );
