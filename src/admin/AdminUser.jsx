@@ -25,6 +25,8 @@ export default function AdminUser() {
   const [logs, setLogs] = useState([]);
   const [tab, setTab] = useState("administrators");
   const [selected, setSelected] = useState(null);
+  const [editTarget, setEditTarget] = useState(null);
+  const [editPermissions, setEditPermissions] = useState({});
   const [approvalTarget, setApprovalTarget] = useState(null);
   const [approvalConfirmed, setApprovalConfirmed] = useState(false);
   const [openActionsId, setOpenActionsId] = useState(null);
@@ -112,6 +114,33 @@ export default function AdminUser() {
   function openApprovalWarning(admin) {
     setApprovalTarget(admin);
     setApprovalConfirmed(false);
+  }
+
+  function openEditAdmin(admin) {
+    setEditTarget(admin);
+    setEditPermissions(admin.permissions || {});
+    setOpenActionsId(null);
+    setError("");
+  }
+
+  async function saveAdminPermissions() {
+    if (!editTarget) return;
+    setSaving(true);
+    setError("");
+    try {
+      const data = await call("update", {
+        user_id: editTarget.user_id,
+        permissions: editPermissions,
+      });
+      setAdmins((current) =>
+        current.map((item) => item.id === editTarget.id ? data.admin : item)
+      );
+      setEditTarget(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to update administrator permissions.");
+    } finally {
+      setSaving(false);
+    }
   }
 
   async function deleteAdmin(admin) {
@@ -269,6 +298,14 @@ export default function AdminUser() {
                     </div>
                     <button
                       type="button"
+                      className="admin-user-edit"
+                      onClick={() => openEditAdmin(admin)}
+                      disabled={saving}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      type="button"
                       className="admin-user-delete"
                       onClick={() => deleteAdmin(admin)}
                       disabled={saving}
@@ -291,6 +328,38 @@ export default function AdminUser() {
       )}
 
       {selected && <div className="admin-details-overlay" onMouseDown={(e) => e.target === e.currentTarget && setSelected(null)}><aside className="admin-details-drawer"><button className="admin-details-close" onClick={() => setSelected(null)}>×</button><span>ADMIN DETAILS</span><h3>{selected.name || selected.action}</h3><div className="admin-detail-tabs"><b>Overview</b><b>Permissions</b><b>Activity</b><b>Audit History</b></div><dl><dt>Email / Admin ID</dt><dd>{selected.email || selected.actor_user_id || selected.user_id || "—"}</dd><dt>Role / Action</dt><dd>{selected.role || selected.action || "—"}</dd><dt>Status / Result</dt><dd>{selected.active ? "Active" : selected.metadata?.result || "Disabled"}</dd><dt>Created / Timestamp</dt><dd>{formatDate(selected.created_at)}</dd><dt>Related record</dt><dd>{selected.target_user_id || "—"}</dd><dt>Metadata</dt><dd>{selected.metadata ? JSON.stringify(selected.metadata) : "No additional metadata"}</dd></dl></aside></div>}
+      {editTarget && (
+        <div className="admin-details-overlay" onMouseDown={(event) => event.target === event.currentTarget && !saving && setEditTarget(null)}>
+          <section className="admin-edit-modal" role="dialog" aria-modal="true" aria-labelledby="admin-edit-title">
+            <button className="admin-details-close" type="button" onClick={() => setEditTarget(null)} disabled={saving}>×</button>
+            <span>ADMINISTRATOR ACCESS</span>
+            <h3 id="admin-edit-title">Edit allowed sections</h3>
+            <p className="admin-edit-subtitle">{editTarget.name || editTarget.email}</p>
+            <div className="admin-permission-grid admin-edit-permissions">
+              {permissionOptions.map(([permission, label]) => (
+                <label key={permission}>
+                  <input
+                    type="checkbox"
+                    checked={editPermissions[permission] === true}
+                    onChange={(event) => setEditPermissions((current) => ({
+                      ...current,
+                      [permission]: event.target.checked,
+                    }))}
+                    disabled={saving}
+                  />
+                  {label}
+                </label>
+              ))}
+            </div>
+            <div className="admin-edit-actions">
+              <button type="button" onClick={() => setEditTarget(null)} disabled={saving}>Cancel</button>
+              <button type="button" onClick={saveAdminPermissions} disabled={saving}>
+                {saving ? "Saving..." : "Save permissions"}
+              </button>
+            </div>
+          </section>
+        </div>
+      )}
       {approvalTarget && (
         <div
           className="admin-approval-overlay"
