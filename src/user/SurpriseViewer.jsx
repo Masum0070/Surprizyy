@@ -1,15 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "../core/supabase/client";
 
-const templateFiles = import.meta.glob(
-  "../surprises/**/index.html",
-  {
-    eager: true,
-    import: "default",
-    query: "?url",
-  }
-);
-
 function normalizeTemplateSlug(value) {
   return String(value || "")
     .trim()
@@ -22,12 +13,15 @@ function normalizeTemplateSlug(value) {
 function getTemplateUrl(slug) {
   const wantedSlug = normalizeTemplateSlug(slug);
 
-  const entry = Object.entries(templateFiles).find(([filePath]) => {
-    const folderName = filePath.split("/").slice(-2, -1)[0];
-    return normalizeTemplateSlug(folderName) === wantedSlug;
-  });
+  if (
+    wantedSlug === "birthday-cute" ||
+    wantedSlug === "birthday-premium" ||
+    wantedSlug === "birthday"
+  ) {
+    return "/surprises/birthday/birthday-cute/index.html";
+  }
 
-  return entry?.[1] || null;
+  return null;
 }
 
 function SurpriseViewer() {
@@ -203,7 +197,7 @@ function SurpriseViewer() {
           title="Birthday surprise"
           src={templateUrl.href}
           className="surprise-template-frame"
-          loading="lazy"
+          loading="eager"
           sandbox="allow-scripts allow-same-origin allow-popups"
           onLoad={() => {
             templateFrameRef.current?.contentWindow?.postMessage(

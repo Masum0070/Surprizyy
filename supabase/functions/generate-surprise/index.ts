@@ -25,6 +25,28 @@ function json(body: unknown, status = 200) {
   });
 }
 
+function getPublicOrigin(req: Request) {
+  const configuredUrl = Deno.env.get("PUBLIC_APP_URL")?.trim();
+  const requestOrigin = req.headers.get("origin")?.trim();
+  const origin = configuredUrl || requestOrigin;
+
+  if (!origin) {
+    return null;
+  }
+
+  try {
+    const parsed = new URL(origin);
+
+    if (!["http:", "https:"].includes(parsed.protocol)) {
+      return null;
+    }
+
+    return parsed.origin;
+  } catch {
+    return null;
+  }
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   if (req.method !== "POST") return json({ success: false, error: "Method not allowed" }, 405);
@@ -64,6 +86,18 @@ Deno.serve(async (req) => {
       return json({ success: false, error: "Surprise has expired" }, 410);
     }
 
+    const origin = getPublicOrigin(req);
+
+    if (!origin) {
+      return json(
+        {
+          success: false,
+          error: "Public app URL is not configured",
+        },
+        500
+      );
+    }
+
     const { data: updated, error: updateError } = await supabase
       .from("surprises")
       .update({ status: "published", published_at: new Date().toISOString() })
@@ -73,11 +107,10 @@ Deno.serve(async (req) => {
       .single();
     if (updateError) throw updateError;
 
-    const origin = Deno.env.get("PUBLIC_APP_URL") || "http://localhost:5173";
     return json({
       success: true,
       surprise: updated,
-      publicUrl: `${origin.replace(/\/$/, "")}/surprise/${updated.public_id}`,
+      publicUrl: `${origin}/surprise/${updated.public_id}`,
     });
   } catch (error) {
     console.error("generate-surprise error:", error);

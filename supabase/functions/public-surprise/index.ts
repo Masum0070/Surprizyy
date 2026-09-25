@@ -203,23 +203,19 @@ Deno.serve(async (req) => {
       throw mediaError;
     }
 
-    const mediaWithUrls = [];
+    const mediaWithUrls = await Promise.all(
+      (media || []).map(async (item) => {
+        const { data: signedUrlData } =
+          await supabase.storage
+            .from(item.bucket_name)
+            .createSignedUrl(item.storage_path, 60 * 10);
 
-    for (const item of media || []) {
-      const { data: signedUrlData } =
-        await supabase.storage
-          .from(item.bucket_name)
-          .createSignedUrl(
-            item.storage_path,
-            60 * 10
-          );
-
-      mediaWithUrls.push({
-        ...item,
-        signed_url:
-          signedUrlData?.signedUrl || null,
-      });
-    }
+        return {
+          ...item,
+          signed_url: signedUrlData?.signedUrl || null,
+        };
+      })
+    );
 
     const { data: templateVersion } =
       await supabase

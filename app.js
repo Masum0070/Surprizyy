@@ -15,14 +15,12 @@ function applyTemplateData(payload){
   const recipientName = payload.recipientName || CONFIG.friendName;
   const values = Array.isArray(payload.values) ? payload.values : [];
   const media = Array.isArray(payload.media) ? payload.media : [];
-  const mainPhotoKeys = ["main_photo", "cover_photo", "profile_photo"];
-  const mainMedia = media.find(item =>
-    item && mainPhotoKeys.includes(item.field_key) && item.signed_url
-  );
   const memoryMedia = media.filter(item =>
-    item &&
-    item.signed_url &&
-    !mainPhotoKeys.includes(item.field_key)
+    item && item.field_key === "memory_photos" && item.signed_url
+  );
+  const mainMedia = media.find(item =>
+    item && ["main_photo", "cover_photo", "profile_photo"].includes(item.field_key) &&
+    item.signed_url
   );
 
   CONFIG.friendName = recipientName;
@@ -72,7 +70,9 @@ function applyTemplateData(payload){
 
   if(CONFIG.memoryAssets.length){
     const uploadedUrls = CONFIG.memoryAssets.map(item => item.signed_url);
-    const imageElements = Array.from(document.querySelectorAll("img"));
+    const imageElements = Array.from(document.querySelectorAll(
+      ".carousel img, #specialImg, #foreverImg"
+    ));
     imageElements.forEach((image, index) => {
       image.src = uploadedUrls[index % uploadedUrls.length];
       image.onerror = null;
@@ -176,18 +176,6 @@ async function fileUrl(name){
   return data.signedUrl;
 }
 
-function uploadedUrlFor(name){
-  const assets = CONFIG.memoryAssets || [];
-  if(!assets.length) return null;
-
-  const index = Number.parseInt(
-    String(name).match(/\d+/)?.[0] || "1",
-    10
-  ) - 1;
-
-  return assets[index % assets.length]?.signed_url || null;
-}
-
 
 
 // Intentionally left without a helper, because the file loader is already used directly.
@@ -212,16 +200,12 @@ function uploadedUrlFor(name){
 
   img.onerror = function(){
     img.onerror = null;
-    const uploadedUrl = uploadedUrlFor(name);
-    img.src = uploadedUrl || placeholderSvg(name);
+    img.src = placeholderSvg(name);
   };
 
   const url = await fileUrl(name);
 
-  const uploadedUrl = uploadedUrlFor(name);
-  if(uploadedUrl){
-    img.src = uploadedUrl;
-  } else if(url){
+  if(url){
     img.src = url;
   } else {
     img.src = placeholderSvg(name);
