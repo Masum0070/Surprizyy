@@ -49,7 +49,7 @@
   }
 
   .admin-order-row {
-    min-width: 900px;
+    min-width: 620px;
   }
 }
 /* =========================================================
@@ -156,11 +156,11 @@
 
 .admin-order-row {
   display: grid;
-  grid-template-columns: 1.15fr 1.45fr .85fr .8fr 1fr 1.2fr;
+  grid-template-columns: minmax(150px, 1.2fr) minmax(260px, 2fr) minmax(100px, .65fr) minmax(140px, 1fr);
   align-items: center;
-  min-width: 900px;
+  min-width: 700px;
   gap: 14px;
-  padding: 14px 16px;
+  padding: 11px 14px;
   border: 1px solid rgba(216, 169, 74, .1);
   border-radius: 10px;
   background: #11100d;
@@ -168,7 +168,7 @@
   font-size: .75rem;
 }
 
-.admin-order-row:not(.admin-order-row-header):hover {
+.admin-order-row:hover {
   border-color: rgba(216, 169, 74, .25);
   background: #15130f;
 }
@@ -180,20 +180,84 @@
   white-space: nowrap;
 }
 
-.admin-order-row span {
+.admin-order-row span,
+.admin-order-row time {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.admin-order-row-header {
-  border: 0;
-  background: transparent;
+.admin-order-customer,
+.admin-order-payment-id,
+.admin-order-amount {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.admin-order-customer span,
+.admin-order-row time {
   color: #897d6c;
-  font-size: .64rem;
+  font-size: .68rem;
+}
+
+.admin-order-payment-id {
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: 8px;
+}
+
+.admin-order-payment-id span {
+  color: #897d6c;
+  font-size: .6rem;
   font-weight: 700;
-  letter-spacing: .08em;
+  letter-spacing: .05em;
   text-transform: uppercase;
+}
+
+.admin-order-payment-id code {
+  overflow: hidden;
+  color: #d8cbb8;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: .65rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-order-amount {
+  justify-items: start;
+}
+
+.admin-order-status {
+  width: fit-content;
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: rgba(216,169,74,.1);
+  color: #d8a94a !important;
+  font-size: .6rem !important;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.admin-order-status-verified {
+  background: rgba(111,175,120,.13);
+  color: #8bcf91 !important;
+}
+
+.admin-order-status-failed,
+.admin-order-status-refunded {
+  background: rgba(183,101,101,.13);
+  color: #d88a8a !important;
+}
+
+.admin-order-refund-proof {
+  color: #d88a8a !important;
+  font-size: .58rem !important;
+  font-weight: 600;
+}
+
+.admin-order-refund-proof.is-accepted {
+  color: #8bcf91 !important;
 }
 
 /* =========================================================

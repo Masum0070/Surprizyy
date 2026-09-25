@@ -918,7 +918,7 @@
   min-height: 100vh;
   max-width: 760px;
   margin: 0 auto;
-  padding: 40px 24px 70px;
+  padding: 24px 24px 40px;
   background: var(--cream);
   color: var(--ink);
   font-family: var(--font-body);
@@ -926,12 +926,12 @@
 
 .checkout-header {
   text-align: center;
-  margin: 35px auto 45px;
+  margin: 20px auto 26px;
 }
 
 .checkout-header span {
   display: inline-block;
-  margin-bottom: 12px;
+  margin-bottom: 7px;
   color: var(--rose-deep);
   font-size: 13px;
   font-weight: 750;
@@ -944,12 +944,12 @@
   color: var(--ink);
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: clamp(34px, 6vw, 52px);
+  font-size: clamp(30px, 5vw, 42px);
   line-height: 1.1;
 }
 
 .checkout-header p {
-  margin: 16px 0 0;
+  margin: 9px 0 0;
   color: var(--text-muted);
   line-height: 1.6;
 }
@@ -958,7 +958,7 @@
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
-  padding: 28px;
+  padding: 22px;
   box-shadow: var(--shadow-lg);
 }
 
@@ -967,7 +967,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  padding-bottom: 25px;
+  padding-bottom: 17px;
   border-bottom: 1px solid var(--border);
 }
 
@@ -977,7 +977,7 @@
 }
 
 .checkout-template h2 {
-  margin: 7px 0 0;
+  margin: 4px 0 0;
   color: var(--ink);
   font-family: var(--font-display);
   font-weight: 600;
@@ -987,25 +987,25 @@
 .checkout-template strong {
   color: var(--rose-deep);
   font-family: var(--font-display);
-  font-size: 25px;
+  font-size: 23px;
 }
 
 .checkout-summary {
-  padding: 25px 0;
+  padding: 16px 0;
 }
 
 .checkout-summary > div {
   display: flex;
   justify-content: space-between;
   gap: 20px;
-  padding: 10px 0;
+  padding: 6px 0;
   color: var(--text-muted);
 }
 
 .checkout-summary hr {
   border: none;
   border-top: 1px solid var(--border);
-  margin: 15px 0;
+  margin: 10px 0;
 }
 
 .checkout-summary .checkout-total {
@@ -1014,11 +1014,31 @@
   font-size: 18px;
 }
 
+.checkout-non-refundable {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin-top: 12px;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.45;
+  cursor: pointer;
+}
+
+.checkout-non-refundable input {
+  width: 17px;
+  height: 17px;
+  flex: 0 0 auto;
+  margin: 0;
+  accent-color: var(--rose-deep);
+  cursor: pointer;
+}
+
 .checkout-pay-button {
   width: 100%;
   border: none;
   border-radius: var(--radius-md);
-  padding: 17px 22px;
+  padding: 14px 22px;
   background: var(--btn-dark);
   color: #fdf6ee;
   font-family: inherit;
@@ -1033,13 +1053,19 @@
   background: var(--btn-dark-hover);
 }
 
+.checkout-pay-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
 @media (max-width: 600px) {
   .checkout-page {
-    padding: 25px 18px 50px;
+    padding: 18px 18px 32px;
   }
 
   .checkout-card {
-    padding: 22px;
+    padding: 18px;
     border-radius: var(--radius-lg);
   }
 
@@ -1057,12 +1083,12 @@
    ========================================================================= */
 
 .checkout-section {
-  padding: 28px 0;
+  padding: 18px 0;
   border-bottom: 1px solid var(--border);
 }
 
 .checkout-section h3 {
-  margin: 0 0 20px;
+  margin: 0 0 14px;
   color: var(--ink);
   font-family: var(--font-display);
   font-weight: 600;
@@ -1070,7 +1096,11 @@
 }
 
 .checkout-field {
-  margin-bottom: 17px;
+  display: grid;
+  grid-template-columns: minmax(125px, 0.7fr) minmax(0, 1.3fr);
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 11px;
 }
 
 .checkout-field:last-child {
@@ -1079,10 +1109,11 @@
 
 .checkout-field label {
   display: block;
-  margin-bottom: 7px;
+  margin-bottom: 0;
   color: var(--ink);
   font-size: 14px;
   font-weight: 650;
+  text-align: left;
 }
 
 .maintenance-page {
@@ -1135,24 +1166,32 @@
 .checkout-field input {
   width: 100%;
   box-sizing: border-box;
-  padding: 14px 15px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--cream);
+  min-height: 0;
+  padding: 4px 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
   color: var(--ink);
   font-size: 15px;
   outline: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  text-align: right;
 }
 
 .checkout-field input:focus {
-  border-color: var(--rose);
-  box-shadow: 0 0 0 3px rgba(184, 103, 127, 0.12);
-  background: var(--surface);
+  border: 0;
+  box-shadow: none;
+  background: transparent;
 }
 
 .checkout-field input::placeholder {
   color: var(--text-faint);
+}
+
+@media (max-width: 480px) {
+  .checkout-field {
+    grid-template-columns: minmax(105px, 0.8fr) minmax(0, 1.2fr);
+    gap: 12px;
+  }
 }
 
 /* =========================================================================
@@ -2882,6 +2921,15 @@ body {
 .surprise-form-card select:focus {
   border-color: var(--rose);
   box-shadow: 0 0 0 4px var(--rose-soft);
+  outline: none;
+}
+
+.checkout-field input,
+.checkout-field input:focus {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
   outline: none;
 }
 

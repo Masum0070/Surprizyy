@@ -18,10 +18,17 @@ export default function SurpriseForm({
       return;
     }
 
+    const normalizedPhone = customerPhone.replace(/\D/g, "");
+
+    if (normalizedPhone && normalizedPhone.length !== 10) {
+      setFormError("WhatsApp number must contain exactly 10 digits.");
+      return;
+    }
+
     const surpriseData = {
       recipientName: recipientName.trim(),
       customerEmail: customerEmail.trim(),
-      customerPhone: customerPhone.trim(),
+      customerPhone: normalizedPhone,
       templateVersionId,
       template,
     };
@@ -52,19 +59,19 @@ export default function SurpriseForm({
         <h1>Let's make it personal.</h1>
 
         <p>
-          Tell us a little about the person receiving this surprise.
+          Tell us a little about the person who is ordering.
         </p>
       </section>
 
       <form className="surprise-form-card" onSubmit={handleContinue}>
         <div className="form-field">
-          <label htmlFor="recipientName">Recipient name</label>
+          <label htmlFor="recipientName">Your name</label>
           <input
             id="recipientName"
             type="text"
             value={recipientName}
             onChange={(event) => setRecipientName(event.target.value)}
-            placeholder="Enter their name"
+            placeholder="Enter your name"
             required
           />
         </div>
@@ -86,9 +93,16 @@ export default function SurpriseForm({
           <input
             id="customerPhone"
             type="tel"
+            inputMode="numeric"
+            maxLength={10}
+            pattern="[0-9]{10}"
             value={customerPhone}
-            onChange={(event) => setCustomerPhone(event.target.value)}
-            placeholder="Enter WhatsApp number"
+            onChange={(event) =>
+              setCustomerPhone(
+                event.target.value.replace(/\D/g, "").slice(0, 10)
+              )
+            }
+            placeholder="10-digit WhatsApp number"
           />
         </div>
 

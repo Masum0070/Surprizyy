@@ -178,7 +178,7 @@ Deno.serve(async (req) => {
       const { data, error } = await adminClient
         .from("payment_orders")
         .select(
-          "id, provider, provider_order_id, provider_payment_id, template_version_id, amount, currency, status, customer_email, created_at, verified_at"
+          "id, provider, provider_order_id, provider_payment_id, template_version_id, amount, currency, status, customer_name, customer_email, non_refundable_accepted, non_refundable_accepted_at, non_refundable_policy_version, created_at, verified_at"
         )
         .order("created_at", { ascending: false });
 
@@ -204,6 +204,10 @@ Deno.serve(async (req) => {
         orders: payments.map((payment) => ({
           ...payment,
           ...(surpriseByPayment.get(payment.id) || {}),
+          customer_name:
+            payment.customer_name ||
+            surpriseByPayment.get(payment.id)?.recipient_name ||
+            null,
         })),
       });
     }

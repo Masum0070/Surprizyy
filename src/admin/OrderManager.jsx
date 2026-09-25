@@ -47,8 +47,10 @@ const [error, setError] = React.useState("");
   const visibleOrders = orders.filter((order) => {
     const matchesSearch =
       !search ||
+      order.customer_name?.toLowerCase().includes(search.toLowerCase()) ||
       order.customer_email?.toLowerCase().includes(search.toLowerCase()) ||
-      order.provider_order_id?.toLowerCase().includes(search.toLowerCase());
+      order.provider_order_id?.toLowerCase().includes(search.toLowerCase()) ||
+      order.provider_payment_id?.toLowerCase().includes(search.toLowerCase());
     const matchesStatus =
       statusFilter === "all" || order.status === statusFilter;
     return matchesSearch && matchesStatus;
@@ -113,10 +115,10 @@ const [error, setError] = React.useState("");
     aria-label="Filter orders by status"
   >
     <option value="all">All Status</option>
-    <option value="pending">Pending</option>
-    <option value="paid">Paid</option>
-    <option value="completed">Completed</option>
-    <option value="cancelled">Cancelled</option>
+    <option value="created">Pending</option>
+    <option value="verified">Paid</option>
+    <option value="failed">Failed</option>
+    <option value="refunded">Refunded</option>
   </select>
 </div>
         <div className="admin-list-header">
@@ -139,22 +141,28 @@ const [error, setError] = React.useState("");
           </div>
         ) : (
           <div className="admin-order-list">
-            <div className="admin-order-row admin-order-row-header">
-              <span>Customer</span>
-              <span>Email</span>
-              <span>Amount</span>
-              <span>Method</span>
-              <span>Verification</span>
-              <span>Date &amp; time</span>
-            </div>
             {visibleOrders.map((order) => (
               <div className="admin-order-row" key={order.id}>
-                <strong>{order.recipient_name || "Unnamed customer"}</strong>
-                <span>{order.customer_email || "No email"}</span>
-                <span>{order.currency} {order.amount}</span>
-                <span>{order.provider || "—"}</span>
-                <span>{order.status}</span>
-                <span>{new Date(order.verified_at || order.created_at).toLocaleString()}</span>
+                <div className="admin-order-customer">
+                  <strong>{order.customer_name || order.recipient_name || "Unnamed customer"}</strong>
+                  <span>{order.customer_email || "No email"}{order.customer_phone ? ` · ${order.customer_phone}` : ""}</span>
+                </div>
+                <div className="admin-order-payment-id">
+                  <span>Order ID</span>
+                  <code>{order.provider_order_id || "—"}</code>
+                  <span>Transaction ID</span>
+                  <code>{order.provider_payment_id || "Pending"}</code>
+                </div>
+                <div className="admin-order-amount">
+                  <strong>{order.currency} {order.amount}</strong>
+                  <span className={`admin-order-status admin-order-status-${order.status}`}>{order.status}</span>
+                  <span className={`admin-order-refund-proof ${order.non_refundable_accepted ? "is-accepted" : ""}`}>
+                    {order.non_refundable_accepted ? "Non-refundable accepted" : "Not accepted"}
+                  </span>
+                </div>
+                <time dateTime={order.verified_at || order.created_at}>
+                  {new Date(order.verified_at || order.created_at).toLocaleString()}
+                </time>
               </div>
             ))}
           </div>

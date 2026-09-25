@@ -440,7 +440,7 @@ Deno.serve(
       } = await supabase
         .from("payment_orders")
         .select(
-          "id, amount, status, template_version_id"
+          "id, amount, status, template_version_id, non_refundable_accepted"
         )
         .eq("id", paymentId)
         .maybeSingle();
@@ -459,6 +459,7 @@ Deno.serve(
       if (
         !payment ||
         payment.status !== "verified" ||
+        payment.non_refundable_accepted !== true ||
         payment.template_version_id !== templateVersionId ||
         Number(payment.amount) !== Number(template.base_price)
       ) {
@@ -468,6 +469,28 @@ Deno.serve(
             error: "Payment does not match the selected template",
           },
           402
+        );
+      }
+
+      const { error: paymentCustomerError } = await supabase
+        .from("payment_orders")
+        .update({
+          customer_name: recipientName,
+          customer_email: customerEmail,
+        })
+        .eq("id", payment.id);
+
+      if (paymentCustomerError) {
+        console.error(
+          "Failed to save payment customer details:",
+          paymentCustomerError
+        );
+        return jsonResponse(
+          {
+            success: false,
+            error: "Failed to save customer order details",
+          },
+          500
         );
       }
 
