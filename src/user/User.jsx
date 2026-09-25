@@ -1,9 +1,38 @@
-import React from "react";
+import React, { useState } from "react";
 import "../styles/user.css";
 
 export default function User({ navigate }) {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
     <main className="surprizyy-home">
+      <header className="home-navigation">
+        <div className="home-logo-placeholder" aria-label="Logo placeholder">
+          LOGO
+        </div>
+
+        <button
+          type="button"
+          className={`home-menu-toggle${menuOpen ? " is-open" : ""}`}
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen((open) => !open)}
+        >
+          <span />
+          <span />
+          <span />
+        </button>
+
+        {menuOpen && (
+          <nav className="home-menu" aria-label="Main menu">
+            <a href="#about" onClick={() => setMenuOpen(false)}>About</a>
+            <a href="#support" onClick={() => setMenuOpen(false)}>Support</a>
+            <a href="#faq" onClick={() => setMenuOpen(false)}>FAQ</a>
+            <a href="#privacy" onClick={() => setMenuOpen(false)}>Privacy</a>
+          </nav>
+        )}
+      </header>
+
       <section className="hero-section">
         <div className="hero-content">
           <span className="hero-badge">✨ Make moments unforgettable</span>
@@ -29,39 +58,6 @@ export default function User({ navigate }) {
         </div>
       </section>
 
-      <section className="categories-section">
-        <div className="section-heading">
-          <span>Explore</span>
-          <h2>Choose your surprise</h2>
-          <p>Pick a moment and let's make it special.</p>
-        </div>
-
-        <div className="category-grid">
-          <button type="button" className="category-card">
-            <span className="category-icon">🎂</span>
-            <strong>Birthday</strong>
-            <small>Make their birthday unforgettable</small>
-          </button>
-
-          <button type="button" className="category-card">
-            <span className="category-icon">💝</span>
-            <strong>Best Friend</strong>
-            <small>A special surprise for your bestie</small>
-          </button>
-
-          <button type="button" className="category-card">
-            <span className="category-icon">🌸</span>
-            <strong>Rakhi</strong>
-            <small>A heartfelt Rakhi memory</small>
-          </button>
-
-          <button type="button" className="category-card">
-            <span className="category-icon">✨</span>
-            <strong>More Surprises</strong>
-            <small>More special moments coming soon</small>
-          </button>
-        </div>
-      </section>
     </main>
   );
 }
